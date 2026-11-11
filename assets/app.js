@@ -43,12 +43,12 @@
   const $ = s => document.querySelector(s);
   const $$ = s => Array.from(document.querySelectorAll(s));
   const reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const safe = (fn, fallback) => { try { return fn(); } catch { return fallback; } };
+  const safe = (fn, fallback) => { try { return fn(); } catch (e) { return fallback; } };
   const ls = {
     get: (k, d = null) => safe(() => { const v = localStorage.getItem(k); return v === null ? d : v; }, d),
     set: (k, v) => safe(() => localStorage.setItem(k, v)),
     del: k => safe(() => localStorage.removeItem(k)),
-    json: (k, d) => safe(() => JSON.parse(localStorage.getItem(k)) ?? d, d)
+    json: (k, d) => safe(() => { const v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; }, d)
   };
   const ss = {
     get: k => safe(() => sessionStorage.getItem(k) || '', ''),
@@ -56,7 +56,9 @@
     del: k => safe(() => sessionStorage.removeItem(k))
   };
   const clampInt = (v, min, max, d) => { const n = parseInt(v, 10); return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : d; };
-  const haptic = p => { try { navigator.vibrate && navigator.vibrate(p); } catch {} };
+  // Замена el.replaceChildren(...) — его нет в браузерах телевизоров до 2020 года
+  const fill = (el, nodes) => { el.textContent = ''; (nodes || []).forEach(n => el.appendChild(n)); };
+  const haptic = p => { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} };
 
   // ---------------------------------------------------------------- режим
   const q = new URLSearchParams(location.search);
@@ -93,10 +95,10 @@
   const DEMO_KEY = 'lichnoe-delo-demo-store-v1';
   const demo = {
     load() {
-      try { const s = JSON.parse(localStorage.getItem(DEMO_KEY)); if (s && s.votes) return s; } catch {}
+      try { const s = JSON.parse(localStorage.getItem(DEMO_KEY)); if (s && s.votes) return s; } catch (e) {}
       return { rev: 0, epoch: 0, votes: {}, control: { display: null, gaugeOverride: null, expectedVotes: 50 } };
     },
-    save(s) { s.rev++; try { localStorage.setItem(DEMO_KEY, JSON.stringify(s)); } catch {} return demo.state(s); },
+    save(s) { s.rev++; try { localStorage.setItem(DEMO_KEY, JSON.stringify(s)); } catch (e) {} return demo.state(s); },
     state(s = demo.load()) {
       const counts = { psychology: 0, numerology: 0, custom: 0 }, suggestions = [];
       Object.values(s.votes).sort((a, b) => a.t - b.t).forEach(v => { counts[v.c]++; if (v.c === 'custom' && v.s) suggestions.push(v.s); });
@@ -137,7 +139,7 @@
     try {
       const r = await fetch(STATE_URL + '?t=' + Date.now(), { cache: 'no-store' });
       if (r.ok) return await r.json();
-    } catch {}
+    } catch (e) {}
     const r = await fetch(API + '?a=state', { cache: 'no-store' });
     if (!r.ok) throw new Error('state ' + r.status);
     return r.json();
@@ -149,7 +151,7 @@
     if (auth) { headers.authorization = 'Bearer ' + adminToken; headers['x-admin-token'] = adminToken; }
     const r = await fetch(API + '?a=' + action, { method: body === undefined ? 'GET' : 'POST', headers, body: body === undefined ? undefined : JSON.stringify(body), cache: 'no-store' });
     let data = {};
-    try { data = await r.json(); } catch {}
+    try { data = await r.json(); } catch (e) {}
     if (!r.ok) { const e = new Error(data.error || 'http ' + r.status); e.status = r.status; e.retryAfter = Number(data.retryAfter) || 0; throw e; }
     return data;
   }
@@ -157,7 +159,7 @@
   function applyState(data, force = false) {
     if (!data || typeof data !== 'object') return;
     if (!force && lastRev !== null && data.rev === lastRev) return;
-    lastRev = data.rev ?? null;
+    lastRev = data.rev != null ? data.rev : null;
     const v = data.votes || {};
     votes = { psychology: Number(v.psychology) || 0, numerology: Number(v.numerology) || 0, abstain: Number(v.custom) || 0 };
     const c = data.control || {};
@@ -192,7 +194,7 @@
   async function poll() {
     clearTimeout(pollTimer);
     try { applyState(await fetchState()); setConnected(true); }
-    catch { setConnected(false); }
+    catch (e) { setConnected(false); }
     if (!document.hidden) pollTimer = setTimeout(poll, POLL_MS[MODE]);
   }
   document.addEventListener('visibilitychange', () => { if (!document.hidden) poll(); else clearTimeout(pollTimer); });
@@ -242,7 +244,7 @@
   const btnFor = choice => $$('.choice').find(b => b.dataset.choice === choice);
 
   const cooldownLeft = () => selected ? Math.max(0, (Number(ls.get(KEY.myVoteAt)) || 0) + VOTE_COOLDOWN_MS - Date.now()) : 0;
-  const fmtLeft = ms => { const t = Math.ceil(ms / 1000); return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'); };
+  const fmtLeft = ms => { const t = Math.ceil(ms / 1000); return Math.floor(t / 60) + ':' + ('0' + (t % 60)).slice(-2); };
   let cooldownTimer = 0;
   function tickCooldown() {
     clearInterval(cooldownTimer);
@@ -350,7 +352,7 @@
   const REELS_ENABLED = true;
   const SYMBOLS = ['art-psych', 'art-numer', 'art-own'];
   function spinReel(btn, { loops = 3, duration = 1400, delay = 0 } = {}) {
-    if (!REELS_ENABLED || reduceMotion || !btn.animate) return Promise.resolve();
+    if (!REELS_ENABLED || reduceMotion || !btn.animate || typeof Animation === 'undefined' || !('finished' in Animation.prototype)) return Promise.resolve();
     const own = SYMBOLS.find(c => btn.querySelector('.choice-art').classList.contains(c));
     const start = SYMBOLS.indexOf(own);
     btn.querySelectorAll('.reel').forEach(r => r.remove());
@@ -528,10 +530,10 @@
         svg.append(star);
       }
     }
-    wheel.replaceChildren(svg);
+    fill(wheel, [svg]);
     const board = $('#prizeBoard');
     if (board) {
-      board.replaceChildren(...active.map(p => { const li = document.createElement('li'); li.textContent = p.name.replace(/(\S)-(\S)/g, '$1‑$2'); return li; }));
+      fill(board, active.map(p => { const li = document.createElement('li'); li.textContent = p.name.replace(/(\S)-(\S)/g, '$1‑$2'); return li; }));
       $('#prizeBoardWrap').hidden = !active.length;
     }
   }
@@ -582,7 +584,7 @@
     $('#prizeTitle').textContent = prize.name;
     $('#prizeText').textContent = 'Поздравляем! Этот подарок — твой.';
     const links = $('#links');
-    links.replaceChildren();
+    fill(links);
     (prize.links || []).forEach(([label, url], i) => {
       if (!url) return;
       const a = document.createElement('a');
@@ -660,7 +662,7 @@
   function renderOwnEntries() {
     const box = $('#ownResponses');
     if (!box || MODE !== 'admin') return;
-    box.replaceChildren();
+    fill(box);
     setText('#ownResponseCount', '(' + suggestions.length + ')');
     if (!suggestions.length) {
       const empty = document.createElement('div');
@@ -673,7 +675,7 @@
 
   function drawPrizeRows() {
     const list = $('#prizeList');
-    list.replaceChildren();
+    fill(list);
     prizes.forEach((p, i) => {
       const row = document.createElement('div');
       row.className = 'prize-row';
@@ -766,8 +768,65 @@
       setText('#qrHost', location.host);
     }
     let uiTimer = 0;
-    const wake = () => { document.body.classList.add('show-ui'); clearTimeout(uiTimer); uiTimer = setTimeout(() => document.body.classList.remove('show-ui'), 2500); };
+    const wake = () => { document.body.classList.add('show-ui'); clearTimeout(uiTimer); uiTimer = setTimeout(() => document.body.classList.remove('show-ui'), 4000); };
     ['mousemove', 'touchstart', 'keydown'].forEach(ev => document.addEventListener(ev, wake, { passive: true }));
+    setupScreenForTV(wake);
+  }
+
+  // ---------------------------------------------------------------- табло: страховка для телевизоров
+  // 1) Размер индикатора считает скрипт в пикселях — не зависит от новых возможностей CSS
+  //    (aspect-ratio, container queries), которых нет во встроенных браузерах Smart TV.
+  // 2) Кнопка «На весь экран»: на пульте телевизора нет F11, кнопка в фокусе — достаточно нажать OK.
+  // 3) Запрет заставки и сна экрана, пока табло открыто (где браузер это умеет).
+  function setupScreenForTV(wake) {
+    const stage = $('.board-stage'), gauge = $('.gauge-window'), hub = $('.needle-hub');
+    const RATIO = 1672 / 941;
+    function layout() {
+      const W = stage.clientWidth || window.innerWidth, H = stage.clientHeight || window.innerHeight;
+      let w = W, h = W / RATIO;
+      if (h > H) { h = H; w = H * RATIO; }
+      gauge.style.cssText = 'position:absolute;z-index:1;width:' + Math.floor(w) + 'px;height:' + Math.floor(h) + 'px;left:' + Math.round((W - w) / 2) + 'px;top:' + Math.round((H - h) / 2) + 'px;max-width:none;margin:0';
+      const hubSize = Math.round(w * 0.07);
+      hub.style.width = hub.style.height = hubSize + 'px';
+      document.body.classList.toggle('screen-tall', H - h > 4);
+      document.body.classList.toggle('screen-wide', W - w > 4);
+    }
+    layout();
+    window.addEventListener('resize', layout);
+    window.addEventListener('orientationchange', () => setTimeout(layout, 300));
+    document.addEventListener('fullscreenchange', layout);
+    document.addEventListener('webkitfullscreenchange', layout);
+
+    const btn = $('#fullscreenBtn');
+    const isFull = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+    const canFull = !!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen);
+    function toggleFull() {
+      const el = document.documentElement;
+      try {
+        if (isFull()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+        else (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+      } catch (e) {}
+    }
+    function syncBtn() { btn.hidden = !canFull || isFull(); }
+    if (btn) {
+      btn.addEventListener('click', toggleFull);
+      document.addEventListener('fullscreenchange', syncBtn);
+      document.addEventListener('webkitfullscreenchange', syncBtn);
+      syncBtn();
+      wake();
+      try { btn.focus(); } catch (e) {}
+    }
+    document.addEventListener('dblclick', toggleFull);
+
+    // Заставка: Screen Wake Lock (Chrome/Edge на ноутбуке, новые Smart TV). Снимается при скрытии вкладки — берём снова.
+    let lock = null;
+    async function keepAwake() {
+      try { if (navigator.wakeLock && !document.hidden) lock = await navigator.wakeLock.request('screen'); } catch (e) {}
+    }
+    keepAwake();
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) keepAwake(); });
+    document.addEventListener('click', () => { if (!lock || lock.released) keepAwake(); });
+
   }
 
   // ---------------------------------------------------------------- синхронизация вкладок
