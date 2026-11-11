@@ -116,13 +116,16 @@ button{cursor:pointer}
 
 /* Барабан игрового автомата: рамка карточки неподвижна, в окне едет лента чистых панелей (img/reel-strip.webp).
    Окно совпадает с панелью своей карточки — отступы те же, что при нарезке ленты. */
-.reel{position:absolute;z-index:1;isolation:isolate;top:10.5%;bottom:7%;left:var(--rl);right:var(--rr);overflow:hidden;border-radius:12%/14%;pointer-events:none;background:#f6e4c2}
+.reel{position:absolute;z-index:1;isolation:isolate;top:10.5%;bottom:7%;left:var(--rl);right:var(--rr);overflow:hidden;border-radius:12%/14%;pointer-events:none;background:#f6e4c2;
+  /* края окна растворяются в панель карточки: прямоугольник не совпадает с выпуклой панелью-цилиндром */
+  -webkit-mask:linear-gradient(90deg,transparent 0,#000 4%,#000 96%,transparent 100%),linear-gradient(180deg,transparent 0,#000 5%,#000 94%,transparent 100%);-webkit-mask-composite:source-in;
+  mask:linear-gradient(90deg,transparent 0,#000 4%,#000 96%,transparent 100%),linear-gradient(180deg,transparent 0,#000 5%,#000 94%,transparent 100%);mask-composite:intersect}
 /* Неподвижная тень цилиндра поверх ленты: карта затенения своей карточки (img/reel-shade-N.png) */
 .reel::after{content:"";position:absolute;inset:0;z-index:1;background:url(../img/reel-shade-0.png) 0 0/100% 100% no-repeat;mix-blend-mode:multiply}
-.choice:nth-child(1) .reel{--rl:9%;--rr:11%}
-.choice:nth-child(2) .reel{--rl:9.5%;--rr:6.5%}
+.choice:nth-child(1) .reel{--rl:5%;--rr:7%}
+.choice:nth-child(2) .reel{--rl:5.5%;--rr:2.5%}
 .choice:nth-child(2) .reel::after{background-image:url(../img/reel-shade-1.png)}
-.choice:nth-child(3) .reel{--rl:14%;--rr:6.5%}
+.choice:nth-child(3) .reel{--rl:10%;--rr:2.5%}
 .choice:nth-child(3) .reel::after{background-image:url(../img/reel-shade-2.png)}
 .reel-strip{position:absolute;left:0;top:0;width:100%;display:flex;flex-direction:column;will-change:transform}
 .reel-item{flex:1 1 0;background:url(../img/reel-strip.webp) no-repeat 0 0/100% 300%}
