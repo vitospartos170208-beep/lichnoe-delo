@@ -651,10 +651,7 @@
 
   // ---------------------------------------------------------------- табло на экране
   if (MODE === 'screen') {
-    // На экране зала — только тумблер: картинка с вырезанным фоном (тот же размер, стрелка на месте)
-    const art = $('.gauge-art');
-    if (art) art.src = 'img/detective-indicator-dial.webp';
-    const qrOn = false; // табло — только индикатор (см. style.css «Табло: только индикатор»)
+    const qrOn = false; // табло — только индикатор с картинкой целиком (см. style.css «Табло: только индикатор»)
     const box = $('#screenQr');
     if (!qrOn || typeof window.qrcode !== 'function') box.classList.add('off');
     else {
