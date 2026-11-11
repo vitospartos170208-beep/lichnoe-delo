@@ -399,3 +399,20 @@ button{cursor:pointer}
   .wheel{transition-duration:1.2s!important}
   .voted-check path{stroke-dashoffset:0}
 }
+
+/* ------------------------------------------------------------ Табло: только индикатор
+   Табло выводится на экран зала — без заголовка, персонажей, счёта, QR и фона-занавеса.
+   Индикатор вписан в экран целиком с сохранением пропорций. Кнопка «Закрыть» и точка связи
+   появляются только при движении мыши. */
+.page-screen,.page-screen body{background:#000}
+.page-screen .backdrop,.page-screen .step-title,.page-screen .woman,.page-screen .score,.page-screen .screen-qr{display:none}
+.page-screen .wrap{padding:0}
+.page-screen .board{display:block;height:100%}
+.page-screen .board-stage{display:grid;place-items:center;height:100%;width:100%;container-type:size}
+.page-screen .gauge-window{width:min(100vw,177.7vh);max-width:none;border-radius:0;box-shadow:none}
+@supports (width:1cqw){.page-screen .gauge-window{width:min(100cqw,177.7cqh)}}
+.page-screen .live-dot{opacity:0;transition:opacity .3s}
+.page-screen.show-ui .live-dot{opacity:1}
+/* Колонки под персонажей больше не нужны — индикатор строго по центру */
+.page-screen .board-stage{grid-template-columns:minmax(0,1fr)}
+.page-screen .gauge-window{justify-self:center;overflow:visible}
