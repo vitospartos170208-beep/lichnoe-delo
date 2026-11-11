@@ -2,355 +2,220 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#17100d">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#140b08">
   <title>Научно-популярное шоу «Личное дело»</title>
-  <style>
-    :root{--paper:#f7f5f0;--ink:#191919;--muted:#77736e;--red:#d93f48;--blue:#2875db;--gold:#e7bd64;--white:#fff}
-    *{box-sizing:border-box} body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
-    .wrap{max-width:1100px;margin:auto;padding:30px 22px 60px}.top{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}.brand{font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
-    .hero{text-align:center;padding:48px 0 24px}.eyebrow{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--red);font-weight:800}.hero h1{font-family:Georgia,serif;font-weight:500;letter-spacing:-.045em;font-size:clamp(42px,7vw,78px);line-height:.98;margin:17px auto 16px;max-width:780px}.hero p{color:var(--muted);font-size:17px;line-height:1.6;margin:0 auto;max-width:580px}
-    .choices{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:34px auto 14px}.choice{border:0;border-radius:999px;padding:14px 22px;color:#fff;font-size:15px;font-weight:750;cursor:pointer;transition:transform .2s,filter .2s;box-shadow:0 8px 22px #00000014}.choice:hover{transform:translateY(-2px);filter:brightness(1.07)}.choice:focus-visible,.spin:focus-visible,.close:focus-visible{outline:3px solid var(--gold);outline-offset:3px}.choice[aria-pressed=true]{box-shadow:0 0 0 3px var(--paper),0 0 0 6px currentColor}.choice.red{background:var(--red)}.choice.black{background:#191919}.choice.blue{background:var(--blue)}
-    .wheel-area{display:flex;flex-direction:column;align-items:center;margin:25px auto 0}.wheel-shell{position:relative;width:min(78vw,410px);aspect-ratio:1;border-radius:50%;padding:13px;background:#191919;box-shadow:0 24px 55px #17151224}.wheel-shell:before{content:"";position:absolute;z-index:2;top:-10px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:19px solid transparent;border-right:19px solid transparent;border-top:38px solid #191919;filter:drop-shadow(0 3px 2px #0003)}
-    .wheel{width:100%;height:100%;border-radius:50%;border:5px solid #fff;position:relative;overflow:hidden;background:conic-gradient(#d93f48 0deg 32.727deg,#fff 32.727deg 65.454deg,#191919 65.454deg 98.181deg,#fff 98.181deg 130.908deg,#2875db 130.908deg 163.635deg,#fff 163.635deg 196.362deg,#d93f48 196.362deg 229.089deg,#fff 229.089deg 261.816deg,#191919 261.816deg 294.543deg,#fff 294.543deg 327.27deg,#2875db 327.27deg 360deg);transition:transform 5s cubic-bezier(.12,.68,.11,1)}.wheel:after{content:"";position:absolute;inset:38%;background:#f7f5f0;border:7px solid #191919;border-radius:50%;box-shadow:0 2px 5px #0003}.wheel-label{position:absolute;left:50%;top:50%;width:44%;height:24px;margin-left:-22%;margin-top:-12px;transform-origin:0 50%;display:flex;justify-content:flex-end;padding-right:15px;align-items:center;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#fff;text-shadow:0 1px 4px #0006;white-space:nowrap}.wheel-label:nth-child(even){color:#242424;text-shadow:none}
-    .spin{margin:27px auto 0;border:0;background:var(--ink);color:#fff;border-radius:999px;padding:16px 34px;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 10px 24px #19191926;transition:transform .2s,opacity .2s}.spin:hover:not(:disabled){transform:translateY(-2px)}.spin:disabled{opacity:.48;cursor:not-allowed}.hint{min-height:24px;margin:13px 0 0;color:var(--muted);font-size:13px;text-align:center}.footnote{max-width:620px;margin:42px auto 0;text-align:center;color:#8a857e;font-size:12px;line-height:1.55}.footnote strong{color:#5d5954}
-    .vote-board{max-width:620px;margin:24px auto 0;text-align:center}.vote-board h2{font:500 32px Georgia,serif;margin:0 0 6px}.vote-board>p{font-size:13px;color:var(--muted);margin:0 0 18px}.gauge-window{position:relative;width:min(100%,400px);height:min(50vw,200px);min-height:145px;margin:0 auto;overflow:hidden}.gauge-face{position:absolute;left:50%;top:0;transform:translateX(-50%);width:min(100vw,400px);aspect-ratio:1;border-radius:50%;background:conic-gradient(from 270deg,#fff 0deg 90deg,var(--red) 90deg 180deg,transparent 180deg 360deg);border:10px solid var(--ink);box-shadow:0 12px 30px #00000014}.gauge-face:after{content:"";position:absolute;inset:12%;border-radius:50%;border:1px solid #19191912}.gauge-label{position:absolute;z-index:2;top:40%;font-size:13px;font-weight:850;letter-spacing:.04em;text-transform:uppercase}.gauge-label.left{left:10%;color:#252525}.gauge-label.right{right:10%;color:#fff;text-shadow:0 1px 3px #0005}.needle{position:absolute;z-index:3;left:50%;bottom:0;width:10px;height:43%;border-radius:10px 10px 3px 3px;background:#171717;transform-origin:50% 100%;transform:translateX(-50%) rotate(0deg);box-shadow:0 0 0 2px #fff;transition:transform .6s cubic-bezier(.2,.75,.25,1)}.needle-hub{position:absolute;z-index:4;left:50%;bottom:-10px;transform:translateX(-50%);width:30px;height:30px;border-radius:50%;background:#171717;border:5px solid #fff;box-shadow:0 2px 10px #0004}.abstain{margin:20px auto 0;display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:400px;padding:14px 18px;border-radius:14px;background:var(--blue);color:#fff;font-weight:800}.abstain b{font-size:22px}.vote-numbers{display:flex;justify-content:center;gap:24px;margin:16px 0 0;color:var(--muted);font-size:13px}.vote-numbers strong{color:var(--ink);font-size:18px;margin-left:4px}.modal{position:fixed;inset:0;background:#111a;display:none;align-items:center;justify-content:center;padding:20px;z-index:10}.modal.show{display:flex}.card{position:relative;background:#fff;border-radius:24px;max-width:480px;width:100%;padding:38px 32px 30px;text-align:center;box-shadow:0 25px 80px #0003;animation:pop .3s ease-out}@keyframes pop{from{transform:translateY(12px) scale(.97);opacity:0}to{transform:none;opacity:1}}.spark{font-size:38px}.card h2{font:500 36px/1.08 Georgia,serif;margin:14px 0}.card p{font-size:15px;line-height:1.6;color:var(--muted);margin:0 0 23px}.links{display:grid;gap:10px}.claim{display:block;text-decoration:none;background:var(--ink);color:#fff;border-radius:12px;padding:14px 17px;font-weight:750}.claim.alt{background:#f1efea;color:var(--ink)}.close{position:absolute;right:14px;top:13px;border:0;background:transparent;color:#777;font-size:25px;cursor:pointer}.small{margin-top:17px;color:#918c84;font-size:11px;line-height:1.5}
-    .admin-panel{display:none;max-width:920px;margin:25px auto 0;background:#fff;border:1px solid #e8e4dc;border-radius:22px;padding:24px;box-shadow:0 12px 34px #0000000d}.admin-panel.show{display:block}.admin-panel h2{font:500 32px Georgia,serif;margin:0 0 6px}.admin-panel .intro{color:var(--muted);font-size:13px;line-height:1.5}.admin-tools{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}.admin-tools button,.admin-tools a,.admin-panel button{border:0;border-radius:10px;background:var(--ink);color:#fff;padding:11px 15px;text-decoration:none;font-weight:750;font-size:13px;cursor:pointer}.admin-tools .light{background:#eeeae3;color:var(--ink)}.score-fields{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}.score-fields label,.prize-row label{display:grid;gap:6px;font-size:12px;color:var(--muted);font-weight:700}.score-fields input,.prize-row input{width:100%;border:1px solid #ddd8cf;background:#fcfbf9;border-radius:9px;padding:11px;color:var(--ink);font:inherit}.prize-list{display:grid;gap:12px;margin:18px 0}.prize-row{border:1px solid #e9e5dd;background:#fcfbf9;border-radius:14px;padding:14px;display:grid;grid-template-columns:2fr .8fr 1.5fr 1.5fr auto;gap:9px;align-items:end}.prize-row button{padding:10px!important;background:#f4e4e4!important;color:#922d32!important}.danger{background:#f4e4e4!important;color:#922d32!important}.admin-foot{color:#918c84;font-size:11px;line-height:1.5;margin-top:16px}.ticket-stat{margin:18px 0;padding:16px 18px;border-radius:14px;background:#fff5e8;border:1px solid #ead2ab}.ticket-stat span{color:#775936;font-size:13px}.ticket-stat strong{font-size:21px;color:#392513}.ticket-progress{height:7px;border-radius:10px;background:#eadfce;margin-top:10px;overflow:hidden}.ticket-progress i{display:block;height:100%;width:0;background:#bd6e25;transition:width .25s}.ticket-art{display:none;width:100%;height:auto;aspect-ratio:3/1;object-fit:cover;border-radius:12px;margin:0 0 18px}.ticket-art.show{display:block}.screen-only{display:none}.page-admin .admin-panel{display:block}.page-screen .screen-only{display:block}.page-screen .hide-screen,.page-admin .hide-admin{display:none!important}.page-admin .top{margin-bottom:16px}
-    @media(max-width:700px){.prize-row{grid-template-columns:1fr 1fr}.prize-row label:first-child{grid-column:span 2}.score-fields{grid-template-columns:1fr}.admin-panel{padding:19px}.vote-numbers{gap:10px;flex-wrap:wrap}.gauge-label{font-size:11px}.gauge-window{height:44vw;min-height:138px}}.page-screen .wrap{max-width:760px;padding-top:5vh}.page-screen .top,.page-screen .hero,.page-screen .wheel-area,.page-screen .footnote{display:none!important}.page-screen .vote-board{margin:0 auto}.page-screen .vote-board h2{font-size:clamp(34px,6vw,54px)}
-    :root{--paper:#f4e6cf;--ink:#211510;--muted:#796858;--red:#b93424;--blue:#2875db;--gold:#dca95c;--white:#fff8e9}
-    body{background:radial-gradient(ellipse at 50% 0%,#493023 0%,#211611 43%,#120d0a 100%);color:#f4e6cf}.wrap{max-width:1120px}.top{color:#c7ad8c;border-bottom:1px solid #b1844f55;padding-bottom:15px}.brand{color:#edc77f;letter-spacing:.18em}.top a{color:#e6c184!important;text-transform:uppercase;font-size:11px;letter-spacing:.12em;border:1px solid #b1844f77;border-radius:3px;padding:9px 12px}.poster-frame{position:relative;max-width:650px;margin:25px auto 0;padding:9px;border:1px solid #c6924c;background:linear-gradient(145deg,#f5d99b,#6f421d 38%,#1d120d 70%,#e7bd79);box-shadow:0 24px 70px #0009}.poster-frame:before,.poster-frame:after{content:"";position:absolute;z-index:1;pointer-events:none;inset:6px;border:1px solid #efcf8a66}.poster-frame img{display:block;width:100%;height:auto}.hero{padding:37px 0 23px}.eyebrow{color:#e7aa56;letter-spacing:.22em}.hero h1{color:#f2d69f;text-shadow:0 3px 22px #0008}.hero p{color:#cbb79b}.choices{margin-top:27px}.choice{border:1px solid #f1d18b66;border-radius:4px;box-shadow:0 8px 24px #0006;letter-spacing:.02em}.choice.red{background:#a82b20;border-color:#ed9b6a}.choice.black{background:#090807;border:1px solid #c4a16a;color:#f4e6cf}.choice.blue{background:#2468ba;border-color:#91b7eb}.choice[aria-pressed=true]{box-shadow:0 0 0 2px #241710,0 0 0 4px #ddb260,0 8px 24px #0008}.wheel-shell{padding:15px;background:linear-gradient(140deg,#e2bd73,#4e2d17 25%,#170e0a 55%,#bc7d33);box-shadow:0 26px 60px #000b;border:1px solid #e5bf73}.wheel-shell:before{border-top-color:#e1bd75;filter:drop-shadow(0 3px 3px #0009)}.wheel{border:5px solid #f0d89f;box-shadow:inset 0 0 0 3px #4b2c16}.wheel:after{background:radial-gradient(circle,#f4ddaa 0 44%,#9c5521 46% 62%,#26140d 66%);border:3px solid #f4d18b;box-shadow:0 0 18px #0009}.wheel-label{font-family:Georgia,serif;font-size:10px;letter-spacing:.03em}.spin{background:linear-gradient(135deg,#f0d18a,#b47a35);color:#26160d;border:1px solid #ffe4a1;border-radius:4px;text-transform:uppercase;letter-spacing:.1em;box-shadow:0 8px 24px #0008}.spin:disabled{color:#66503a}.hint{color:#cdbb9e}.footnote{color:#b6a28a}.footnote strong{color:#e7c47e}.vote-board{background:linear-gradient(145deg,#2e1d14,#17100d);border:1px solid #a97b3f;padding:25px 22px 24px;box-shadow:0 14px 36px #0007}.vote-board h2{color:#f0d59f}.vote-board>p{color:#c6b29b}.gauge-face{border-color:#c39552;box-shadow:0 12px 30px #0005}.needle{background:#25201a;box-shadow:0 0 0 2px #f4d89b,0 2px 6px #0008}.needle-hub{background:#d8a34f;border-color:#f4d89b}.abstain{border-radius:3px;border:1px solid #8ab5ef;box-shadow:0 5px 17px #0005}.vote-numbers{color:#ccb89d}.vote-numbers strong{color:#f8e7c6}.modal{background:#090705d9;backdrop-filter:blur(5px)}.card{border:1px solid #c89955;border-radius:3px;background:linear-gradient(145deg,#fff2d7,#e9d2a8);color:#24150d;box-shadow:0 25px 80px #000a}.card h2{color:#3a2010}.card p{color:#725b43}.claim{background:#432513;border:1px solid #bd8847;border-radius:3px;color:#f8e6c0}.claim.alt{background:#f4e4c6;color:#402515;border:1px solid #c7a16b}.small{color:#7d674e}.close{color:#56391f}.admin-panel{background:linear-gradient(150deg,#fff3dc,#ead4ac);border:1px solid #d1a45d;border-radius:3px;color:#28180e;box-shadow:0 18px 50px #0008}.admin-panel h2,.admin-panel h3{color:#382010}.admin-panel .intro{color:#725b43}.admin-tools button,.admin-tools a,.admin-panel button{border-radius:3px;background:#442817;border:1px solid #bc8d4e;color:#f5e1bb}.admin-tools .light{background:#f0dfbf;color:#422716}.score-fields input,.prize-row input{background:#fff8e9;border-color:#d1b78a;color:#2d1a10;border-radius:3px}.prize-row{background:#f9edda;border-color:#d7bd92;border-radius:3px}.prize-row button{border-radius:3px!important}.ticket-stat{background:#f5e2bf;border-color:#d0a15a;border-radius:3px}.ticket-stat span{color:#68441e}.ticket-stat strong{color:#3b230f}.ticket-progress{background:#dcc7a0;border-radius:0}.ticket-progress i{background:#b77932}.admin-foot{color:#755d43}.page-screen{background:radial-gradient(ellipse at 50% 0%,#493023 0%,#211611 43%,#120d0a 100%)}
-    @media(max-width:700px){.poster-frame{margin-top:19px;padding:6px}.poster-frame:before,.poster-frame:after{inset:4px}.vote-board{padding:21px 13px}.wheel-label{font-size:8px}.top a{font-size:9px;padding:8px}}.page-admin .poster-frame,.page-admin .hero,.page-admin .wheel-area,.page-admin .vote-board,.page-screen .poster-frame{display:none!important}.page-admin .wrap{padding-top:22px}.page-admin .admin-panel{margin-top:0}
-    @media(max-width:560px){.wrap{padding:20px 16px 45px}.top span:last-child{font-size:11px}.hero{padding:42px 0 14px}.hero p{font-size:15px}.choices{gap:9px}.choice{padding:12px 16px;font-size:14px}.wheel-shell{width:min(84vw,360px)}.wheel-label{font-size:8px;padding-right:10px}.card{padding:35px 23px 25px}}
-    body{overflow:hidden;position:relative}body:before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:url("show-poster.webp") center 37%/cover no-repeat;opacity:.035;filter:sepia(.25) saturate(.7)}
-    .wrap{position:relative;z-index:1;width:100%;max-width:none;height:100dvh;max-height:100dvh;overflow:hidden;display:grid;grid-template-columns:minmax(320px,1.05fr) minmax(340px,.95fr);grid-template-rows:auto auto minmax(0,1fr);gap:8px clamp(16px,3vw,42px);align-content:stretch;padding:12px clamp(16px,3vw,46px)}
-    .top{grid-column:1/-1;grid-row:1;padding-bottom:8px}.poster-frame,.footnote{display:none!important}.hero{grid-column:2;grid-row:2;text-align:left;padding:5px 0 0;align-self:center}.hero h1{font-size:clamp(30px,3.4vw,48px);margin:5px 0 8px;line-height:1}.hero p{font-size:14px;line-height:1.4;margin:0;max-width:480px}.eyebrow{font-size:10px}.choices{justify-content:flex-start;gap:8px;margin:12px 0 0}.choice{font-size:13px;padding:10px 14px}
-    .wheel-area{grid-column:1;grid-row:2/4;align-self:stretch;min-height:0;margin:0;display:grid;grid-template-rows:minmax(0,1fr) auto auto;justify-items:center;align-items:center}.wheel-shell{width:min(100%,min(34vw,58vh,520px));max-width:520px;align-self:center}.wheel-label{display:none!important}.spin{margin:7px auto 0;padding:12px 24px;font-size:13px}.hint{font-size:11px;margin:5px 0 0;min-height:15px}
-    .vote-board{grid-column:2;grid-row:3;align-self:stretch;min-height:0;margin:0;padding:10px 16px 8px;display:flex;flex-direction:column;justify-content:center}.vote-board h2{font-size:clamp(23px,2.3vw,31px);margin:0 0 3px}.vote-board>p{font-size:11px;margin:0 0 7px}.gauge-window{height:min(19vh,150px);min-height:100px;width:min(100%,340px)}.gauge-face{width:min(100vw,340px)}.abstain{margin:6px auto 0;padding:8px 14px;max-width:340px}.abstain b{font-size:18px}.vote-numbers{font-size:11px;gap:14px;margin:7px 0 0}.vote-numbers strong{font-size:15px}
-    .admin-panel{position:relative;z-index:1}.page-admin{overflow:auto}.page-admin .wrap{display:block;height:auto;max-height:none;overflow:visible;padding-top:12px}.page-admin .admin-panel{height:calc(100dvh - 64px);overflow:auto;margin:0 auto 12px}.page-screen{overflow:hidden}.page-screen .wrap{display:block;height:100dvh;max-height:100dvh;padding:6vh 16px;overflow:hidden}.page-screen .top,.page-screen .hero,.page-screen .wheel-area,.page-screen .footnote,.page-screen .poster-frame{display:none!important}.page-screen .vote-board{display:flex;max-width:700px;height:88vh;margin:0 auto;padding:26px 20px;justify-content:center}.page-screen .gauge-window{height:min(36vh,280px);min-height:200px;width:min(100%,540px)}.page-screen .gauge-face{width:min(100vw,540px)}.page-screen .vote-board h2{font-size:clamp(34px,6vw,54px)}
-    @media(max-width:800px){.wrap{grid-template-columns:1fr;grid-template-rows:auto auto minmax(0,1fr) auto;gap:4px;padding:8px 13px 6px}.top{padding-bottom:5px}.top a{font-size:9px;padding:7px 9px}.brand{font-size:10px}.hero{grid-column:1;grid-row:2;text-align:center;padding:0;align-self:auto}.hero h1{font-size:clamp(23px,6vw,31px);margin:2px 0 0;line-height:.98}.hero p{display:none}.eyebrow{font-size:9px}.choices{justify-content:center;gap:6px;margin:7px 0 1px}.choice{font-size:11px;padding:7px 11px}.wheel-area{grid-column:1;grid-row:3;grid-template-rows:minmax(0,1fr) auto auto}.wheel-shell{width:min(72vw,36vh,300px);max-width:300px}.spin{font-size:11px;padding:10px 19px;margin-top:4px}.hint{font-size:10px;margin:3px 0 0}.vote-board{grid-column:1;grid-row:4;padding:6px 9px;margin:0;justify-content:center}.vote-board h2{font-size:19px;margin:0}.vote-board>p{display:none}.gauge-window{height:clamp(56px,11vh,88px);min-height:56px;width:min(100%,250px)}.gauge-face{width:min(65vw,250px);border-width:6px}.gauge-label{font-size:9px;top:35%}.needle{width:7px;height:42%}.needle-hub{width:22px;height:22px;border-width:4px;bottom:-7px}.abstain{max-width:250px;margin:4px auto 0;padding:5px 10px;font-size:12px}.abstain b{font-size:16px}.vote-numbers{font-size:9px;gap:8px;margin:4px 0 0}.vote-numbers strong{font-size:13px}.page-screen .wrap{padding:4vh 12px}.page-screen .vote-board{height:92vh;padding:10px}.page-screen .gauge-window{height:28vh;min-height:150px}.page-screen .gauge-face{width:min(92vw,440px)}}
-    .needle{bottom:50%}.needle-hub{bottom:calc(50% - 15px)}@media(max-width:800px){.needle{bottom:50%}.needle-hub{bottom:calc(50% - 11px)}}
-    .gauge-window{height:auto;min-height:0;aspect-ratio:2/1}.gauge-face{width:100%}@media(max-width:800px){.gauge-window{height:auto;min-height:0;aspect-ratio:2/1;width:min(100%,250px)}.gauge-face{width:100%}}.page-screen .gauge-window{height:auto;min-height:0;aspect-ratio:2/1;width:min(100%,540px)}.page-screen .gauge-face{width:100%}
-
-    .host-only{display:none!important}.page-admin .host-only{display:inline-flex!important}.screen-close{display:none;position:fixed;z-index:20;top:22px;right:24px;align-items:center;gap:9px;padding:12px 18px;border:1px solid #f3cf83;border-radius:3px;background:linear-gradient(135deg,#efcf83,#a86628);box-shadow:0 0 24px #e6aa58aa,0 8px 25px #0009;color:#24130b;text-decoration:none;text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:900}.page-screen .screen-close{display:inline-flex}
-    .page-screen{background:radial-gradient(ellipse at 50% 40%,#692f1c 0%,#2b1510 36%,#100908 78%);color:#fff1cf}.page-screen:before{opacity:.055;filter:sepia(.45) saturate(1.3)}.page-screen .wrap{max-width:940px;padding:6vh 20px}.page-screen .vote-board{position:relative;isolation:isolate;overflow:hidden;max-width:880px;height:88vh;padding:34px 24px;border:1px solid #f1c36b;border-radius:6px;background:radial-gradient(ellipse at 50% 100%,#4a2116,#1b0e0b 65%);box-shadow:0 0 0 5px #bd783933,0 0 55px #e3a84c44,inset 0 0 50px #e28c3230}.page-screen .vote-board:before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 20%,#ffdb8a24,transparent 47%),radial-gradient(ellipse at 8% 54%,#e9272730,transparent 38%),radial-gradient(ellipse at 92% 54%,#fff5dc22,transparent 38%)}.page-screen .vote-board h2{color:#ffe3a5;text-transform:uppercase;letter-spacing:.14em;text-shadow:0 0 14px #ffcb70aa,0 2px 4px #000}.page-screen .vote-board>p{color:#ecd3aa;font-size:14px}.page-screen .gauge-window{width:min(100%,650px);filter:drop-shadow(0 0 18px #e5ad5266)}.page-screen .gauge-face{border:13px solid #e8bd6d;box-shadow:0 0 0 4px #6c391b,0 0 26px #ffc96877,inset 0 0 20px #0004}.page-screen .gauge-face:after{inset:9%;border:1px solid #ffe6b533;box-shadow:inset 0 0 20px #0003}.page-screen .gauge-label{font-size:clamp(12px,1.6vw,18px);text-shadow:0 2px 5px #000b}.page-screen .gauge-label.left{color:#312018}.page-screen .gauge-label.right{color:white}.page-screen .needle{width:18px;height:47%;background:linear-gradient(90deg,#633a23,#fff0ba 30%,#fff 50%,#f1c46d 70%,#64351f);box-shadow:0 0 0 2px #2e170c,0 0 0 4px #ffe5a6,0 0 25px 7px #fff4c677;transition:transform .8s cubic-bezier(.18,.8,.18,1)}.page-screen .needle-hub{width:52px;height:52px;bottom:calc(50% - 26px);background:radial-gradient(circle at 35% 30%,#fff1bf,#e9ad4f 40%,#692e17 75%);border:5px solid #ffdfa0;box-shadow:0 0 0 5px #562819,0 0 24px #ffcb6a99}.page-screen .needle{bottom:50%}.page-screen .abstain{max-width:540px;padding:13px 20px;background:linear-gradient(100deg,#1762bb,#298bf2,#174e9a);border:1px solid #abd5ff;box-shadow:0 0 24px #3089ff66;color:#fff}.page-screen .vote-numbers{color:#e7cba5}.page-screen .vote-numbers strong{color:#fff1d2}.page-screen .vote-numbers span{padding:9px 13px;border:1px solid #d3a05277;border-radius:3px;background:#09080766}.page-admin .top .brand:after{content:" · ВЕДУЩИМ";color:#e7aa56;font-size:.8em}
-    .page-screen .vote-board .abstain,.page-screen .vote-board .vote-numbers{display:none!important}
-
-    .hero{display:flex;flex-direction:column;justify-content:center;gap:4px}.hero .eyebrow{text-transform:uppercase;color:#e8c37c;font-size:clamp(11px,1vw,14px);letter-spacing:.2em}.hero h1{text-transform:uppercase;font-size:clamp(34px,4.6vw,62px);letter-spacing:.04em;line-height:.95;margin:0}.choice-title{font:700 clamp(22px,2.2vw,32px)/1.05 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f7e5c3;text-transform:uppercase;letter-spacing:.12em;margin:8px 0 2px}.hero p{margin:0;color:#cbb79b}.choices{width:100%;gap:10px;margin:8px 0 2px}.choice{flex:1 1 28%;min-width:0;padding:15px 12px;font-size:clamp(12px,1vw,16px);font-weight:850;text-transform:uppercase;letter-spacing:.035em}.hero-cast{display:block;width:100%;max-width:650px;height:clamp(100px,14vh,160px);object-fit:cover;object-position:center 12%;margin:0 auto;filter:drop-shadow(0 10px 14px #0005)}
-    .own-card textarea{display:block;width:100%;min-height:110px;resize:vertical;margin:10px 0 15px;border:1px solid #bd965d;border-radius:3px;background:#fff8e9;color:#29190e;padding:13px;font:15px/1.45 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.own-card textarea:focus{outline:2px solid #c08b44;outline-offset:2px}.own-actions{display:grid;gap:9px}.own-actions button{width:100%;cursor:pointer;font:750 14px Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-align:center}.own-responses{display:grid;gap:7px}.own-response{padding:9px 12px;background:#f9edda;border-left:3px solid #b77932;color:#402a17;font-size:13px;overflow-wrap:anywhere}.own-empty{color:#816b52;font-size:13px;padding:6px 0}
-    @media(max-width:800px){.hero{gap:2px}.hero .eyebrow{font-size:9px}.hero h1{font-size:clamp(25px,7vw,36px)}.choice-title{font-size:clamp(18px,4.8vw,24px);margin:3px 0 0}.hero p{display:none}.choices{gap:6px;margin:6px 0 0}.choice{font-size:clamp(10px,2.7vw,13px);padding:9px 5px}.hero-cast{height:clamp(58px,9vh,82px);object-position:center 10%;width:min(100%,520px)}.wheel-shell{width:min(65vw,32vh,270px)}.own-card{padding:32px 22px 25px}}
-    /* Основной экран: выбор, табло, затем барабан */
-    body:not(.page-admin):not(.page-screen) .wrap{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto minmax(0,1fr);gap:2px;padding:8px clamp(14px,3vw,44px);height:100dvh;max-height:100dvh;overflow:hidden}
-    body:not(.page-admin):not(.page-screen) .top{grid-column:1;grid-row:1;padding-bottom:4px}
-    body:not(.page-admin):not(.page-screen) .hero{grid-column:1;grid-row:2;display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:center;gap:1px;padding:0;align-self:start}
-    body:not(.page-admin):not(.page-screen) .hero h1{font-size:clamp(22px,3.2vw,38px);line-height:.95;margin:0}
-    body:not(.page-admin):not(.page-screen) .choice-title{font-size:clamp(16px,2vw,24px);letter-spacing:.1em;margin:4px 0 0}
-    body:not(.page-admin):not(.page-screen) .hero p{display:none}
-    body:not(.page-admin):not(.page-screen) .choices{justify-content:center;width:min(100%,900px);margin:5px auto 0;gap:8px}
-    body:not(.page-admin):not(.page-screen) .choice{padding:clamp(7px,1vh,11px) 12px;font-size:clamp(11px,1.1vw,15px)}
-    body:not(.page-admin):not(.page-screen) .vote-board{grid-column:1;grid-row:3;display:flex;align-items:center;justify-content:center;gap:1px;width:100%;max-width:none;min-height:0;margin:0;padding:0}
-    body:not(.page-admin):not(.page-screen) .vote-board h2{font-size:clamp(14px,1.8vw,22px);text-transform:uppercase;letter-spacing:.12em;margin:0;color:#f4d28d;text-shadow:0 2px 12px #e3a84c77}
-    body:not(.page-admin):not(.page-screen) .vote-board>p{display:none}
-    body:not(.page-admin):not(.page-screen) .vote-board .gauge-window{width:min(30vw,300px);min-height:0;height:auto;aspect-ratio:2/1}
-    body:not(.page-admin):not(.page-screen) .vote-board .gauge-face{width:100%}
-    body:not(.page-admin):not(.page-screen) .vote-board .abstain,body:not(.page-admin):not(.page-screen) .vote-board .vote-numbers{display:none!important}
-    body:not(.page-admin):not(.page-screen) .wheel-area{position:relative;grid-column:1;grid-row:4;display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;justify-items:center;align-items:center;align-self:stretch;min-height:0;overflow:hidden;margin:0}
-    body:not(.page-admin):not(.page-screen) .wheel-title{position:relative;z-index:3;grid-row:1;margin:0;color:#ffe0a0;font-size:clamp(13px,1.6vw,20px);font-weight:850;letter-spacing:.14em;text-align:center;text-transform:uppercase;text-shadow:0 0 15px #e7a94d88}
-    body:not(.page-admin):not(.page-screen) .hero-cast{position:absolute;z-index:1;left:50%;top:clamp(16px,3vh,30px);width:min(94vw,1000px);height:min(42vh,370px);transform:translateX(-50%);object-fit:contain;object-position:center bottom;margin:0;filter:drop-shadow(0 0 22px #d99a4d66);pointer-events:none}
-    body:not(.page-admin):not(.page-screen) .wheel-shell{position:relative;z-index:2;grid-row:2;align-self:end;width:min(26vh,28vw,320px);max-width:320px;padding:10px}
-    body:not(.page-admin):not(.page-screen) .spin{position:relative;z-index:3;grid-row:3;margin:5px auto 0;padding:9px 22px;font-size:12px}
-    body:not(.page-admin):not(.page-screen) .hint{position:relative;z-index:3;grid-row:4;min-height:12px;margin:3px 0 0;font-size:10px}
-    body:not(.page-admin):not(.page-screen) .wheel-title{display:block}.page-admin .wheel-title,.page-screen .wheel-title{display:none}
-    @media(max-width:800px){body:not(.page-admin):not(.page-screen) .wrap{padding:6px 12px 4px;gap:0}body:not(.page-admin):not(.page-screen) .top{padding-bottom:2px}body:not(.page-admin):not(.page-screen) .brand{font-size:9px}body:not(.page-admin):not(.page-screen) .hero .eyebrow{font-size:8px}body:not(.page-admin):not(.page-screen) .hero h1{font-size:clamp(19px,5vw,28px)}body:not(.page-admin):not(.page-screen) .choice-title{font-size:clamp(14px,3.8vw,20px);margin:2px 0 0}body:not(.page-admin):not(.page-screen) .choices{gap:5px;margin:3px auto 0}body:not(.page-admin):not(.page-screen) .choice{font-size:clamp(9px,2.7vw,12px);padding:7px 6px}body:not(.page-admin):not(.page-screen) .vote-board h2{font-size:13px}body:not(.page-admin):not(.page-screen) .vote-board .gauge-window{width:min(60vw,270px)}body:not(.page-admin):not(.page-screen) .vote-board .gauge-face{border-width:6px}body:not(.page-admin):not(.page-screen) .vote-board .gauge-label{font-size:8px}body:not(.page-admin):not(.page-screen) .wheel-title{font-size:12px;letter-spacing:.1em}body:not(.page-admin):not(.page-screen) .hero-cast{top:20px;width:100vw;height:min(39vh,270px)}body:not(.page-admin):not(.page-screen) .wheel-shell{width:min(31vh,58vw,300px);padding:8px}body:not(.page-admin):not(.page-screen) .spin{font-size:10px;padding:7px 18px;margin-top:2px}body:not(.page-admin):not(.page-screen) .hint{font-size:9px;margin-top:1px}}
-    /* Финальная компоновка: отдельные строки без наложений */
-    body:not(.page-admin):not(.page-screen) .wrap{grid-template-rows:auto auto clamp(185px,26vh,220px) minmax(0,1fr);gap:clamp(6px,1vh,10px)}
-    body:not(.page-admin):not(.page-screen) .vote-board{display:grid!important;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);justify-items:center;align-content:center;align-items:center;width:100%!important;max-width:none!important;height:100%;min-height:0;margin:0;padding:0;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:visible}
-    body:not(.page-admin):not(.page-screen) .vote-board h2{grid-row:1;align-self:end;margin:0 0 2px;text-align:center}
-    body:not(.page-admin):not(.page-screen) .vote-board .gauge-window{grid-row:2;align-self:start;justify-self:center;width:min(34vw,320px);height:auto;min-height:0;aspect-ratio:2/1;margin:0}
-    body:not(.page-admin):not(.page-screen) .vote-board .gauge-face{width:100%;height:auto}
-    body:not(.page-admin):not(.page-screen) .wheel-area{min-height:0;overflow:hidden}
-    body:not(.page-admin):not(.page-screen) .wheel-shell{width:min(26vh,28vw,320px);max-width:320px}
-    body:not(.page-admin):not(.page-screen) .hero-cast{top:clamp(8px,1.5vh,18px);width:min(88vw,900px);height:min(36vh,330px)}
-    @media(max-width:800px){body:not(.page-admin):not(.page-screen) .wrap{grid-template-rows:auto auto clamp(185px,26vh,220px) minmax(0,1fr);gap:3px}body:not(.page-admin):not(.page-screen) .vote-board .gauge-window{width:min(60vw,270px)}body:not(.page-admin):not(.page-screen) .hero-cast{top:10px;width:100vw;height:min(34vh,260px)}}
-
-    /* Театральная детективная тема по присланным иллюстрациям */
-    body:not(.page-admin):not(.page-screen){background:radial-gradient(ellipse at 50% 35%,#5a2119 0%,transparent 58%),repeating-linear-gradient(90deg,#120709 0%,#21080b 4%,#3a0a10 6%,#170709 12%,#100608 17%);color:#f7e7cb}
-    body:not(.page-admin):not(.page-screen):before{background:radial-gradient(ellipse at 50% 8%,#ffcf7428,transparent 38%),radial-gradient(ellipse at 50% 100%,#8b182322,transparent 56%);opacity:1;filter:none}
-    body:not(.page-admin):not(.page-screen) .wrap{grid-template-rows:auto auto clamp(265px,44vh,510px) minmax(0,1fr);gap:clamp(4px,.7vh,9px);padding-top:8px}
-    body:not(.page-admin):not(.page-screen) .top{border-color:#d69c42aa}
-    body:not(.page-admin):not(.page-screen) .brand{color:#f5cb7b;text-shadow:0 0 12px #e6a73c66}
-    body:not(.page-admin):not(.page-screen) .hero h1{color:#ffe3aa;text-shadow:0 2px 25px #edaa4844}
-    body:not(.page-admin):not(.page-screen) .choice-title{color:#fff1d3;text-shadow:0 2px 16px #edaa4844}
-    body:not(.page-admin):not(.page-screen) .choices{margin-top:8px}
-    body:not(.page-admin):not(.page-screen) .choice{position:relative;overflow:hidden;border:2px solid #e5b85e;border-radius:9px;color:#fff2d7;text-shadow:0 1px 5px #190a05;box-shadow:inset 0 0 0 2px #421d10,0 0 0 1px #120a07,0 8px 24px #0009;letter-spacing:.09em}
-    body:not(.page-admin):not(.page-screen) .choice:after{content:"";position:absolute;inset:5px;border:1px solid #ffdf8b88;border-radius:5px;pointer-events:none}
-    body:not(.page-admin):not(.page-screen) .choice.red{background:linear-gradient(135deg,#9e200f,#e04c27 46%,#7d100b);border-color:#ffc45f}
-    body:not(.page-admin):not(.page-screen) .choice.black{background:linear-gradient(135deg,#120d0b,#493321 48%,#100b09);border-color:#d6a449}
-    body:not(.page-admin):not(.page-screen) .choice.blue{background:linear-gradient(135deg,#10386d,#256fbe 48%,#082a59);border-color:#e8bd61}
-    body:not(.page-admin):not(.page-screen) .choice[aria-pressed=true]{box-shadow:inset 0 0 0 2px #421d10,0 0 0 3px #ffd66f,0 0 25px #ffbd4788,0 8px 25px #000a}
-    body:not(.page-admin):not(.page-screen) .vote-board{position:relative;z-index:1;display:grid!important;grid-template-rows:auto minmax(0,1fr);justify-items:center;align-content:start;align-items:center;width:100%!important;height:100%;margin:0;padding:clamp(4px,1vh,12px) 0 0;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:visible}
-    body:not(.page-admin):not(.page-screen) .vote-board h2{grid-row:1;align-self:start;margin:0 0 4px;color:#ffe1a0;text-shadow:0 2px 15px #f2b94a88;font:700 clamp(17px,2vw,25px)/1.05 Georgia,serif;letter-spacing:.16em;text-transform:uppercase;background:linear-gradient(90deg,transparent,#170a08e8 12% 88%,transparent);padding:6px 16px}
-    body:not(.page-admin):not(.page-screen) .vote-board>p{display:none}
-    body:not(.page-admin):not(.page-screen) .vote-board .abstain,body:not(.page-admin):not(.page-screen) .vote-board .vote-numbers{display:none!important}
-    body:not(.page-admin):not(.page-screen) .gauge-window{position:relative;grid-row:2;width:auto;height:min(40vh,470px);max-width:94vw;aspect-ratio:16/9;min-height:0;margin:0;overflow:hidden;filter:drop-shadow(0 9px 22px #0009)}
-    body:not(.page-admin):not(.page-screen) .gauge-art{display:block;width:100%;height:100%;object-fit:contain}
-    body:not(.page-admin):not(.page-screen) .static-needle-mask{position:absolute;z-index:2;left:50%;top:20.7%;bottom:23.7%;width:1.65%;transform:translateX(-50%);background:linear-gradient(90deg,#f3e4ca 0%,#efe0c4 46%,#c58e47 48%,#683d1f 50%,#79000b 52%,#aa1018 100%);pointer-events:none}
-    body:not(.page-admin):not(.page-screen) .needle{position:absolute;z-index:3;left:50%;top:20.5%;bottom:auto;width:1.35%;min-width:9px;max-width:18px;height:55%;border-radius:10px 10px 4px 4px;background:linear-gradient(90deg,#573119,#f6ce73 25%,#fff0bc 50%,#c58b35 76%,#4a2713);box-shadow:0 0 0 2px #32160b,0 0 0 4px #f6c75e,0 0 18px #ffcf67;transform-origin:50% 100%;transform:translateX(-50%) rotate(0deg);transition:transform .75s cubic-bezier(.18,.8,.18,1)}
-    body:not(.page-admin):not(.page-screen) .needle-hub{position:absolute;z-index:4;left:50%;top:74%;bottom:auto;width:7%;height:auto;aspect-ratio:1;transform:translate(-50%,-50%);border:4px solid #ffe7aa;background:radial-gradient(circle at 35% 30%,#fff0ba,#d9912e 45%,#5a260f 75%);box-shadow:0 0 0 4px #4b2310,0 0 22px #ffc654aa}
-    body:not(.page-admin):not(.page-screen) .wheel-area{isolation:isolate;overflow:hidden}
-    body:not(.page-admin):not(.page-screen) .wheel-area:before{content:"";position:absolute;z-index:-1;left:50%;top:50%;width:min(47vh,620px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;clip-path:circle(50%);background:url("luxury-wheel-art.webp") center 46%/cover no-repeat;opacity:.72;filter:saturate(1.12) drop-shadow(0 0 25px #ef9d3040);pointer-events:none}
-    body:not(.page-admin):not(.page-screen) .wheel-shell{width:min(26vh,38vw,340px);max-width:340px;align-self:center;margin-top:26px;padding:12px;border:2px solid #ffd777;background:linear-gradient(145deg,#ffd977,#77370c 20%,#190b07 53%,#d58220);box-shadow:0 0 0 4px #40200f,0 0 0 7px #f6c85d,0 0 34px #ffb83d88,0 24px 55px #000d}
-    body:not(.page-admin):not(.page-screen) .wheel-shell:before{z-index:5;border-left-width:20px;border-right-width:20px;border-top-width:40px;border-top-color:#ffd776;filter:drop-shadow(0 0 6px #ffc34b)}
-    body:not(.page-admin):not(.page-screen) .wheel-shell:after{content:"";position:absolute;z-index:3;inset:4px;border-radius:50%;background:repeating-conic-gradient(#ffe18a 0deg 2deg,transparent 2deg 12deg);-webkit-mask:radial-gradient(circle,transparent 0 79%,#000 80% 83%,transparent 84%);mask:radial-gradient(circle,transparent 0 79%,#000 80% 83%,transparent 84%);pointer-events:none}
-    body:not(.page-admin):not(.page-screen) .wheel{position:relative;z-index:1;border:6px solid #ffe8af;box-shadow:inset 0 0 0 3px #52220d,inset 0 0 22px #0008,0 0 20px #ffba3c77}
-    body:not(.page-admin):not(.page-screen) .wheel:after{content:"ЛД";display:grid;place-items:center;color:#ffdc88;font:italic 700 clamp(19px,2.2vh,28px) Georgia,serif;background:radial-gradient(circle,#4d260f 0 42%,#d9922b 44% 52%,#56250f 56% 68%,#170b07 70%);border:3px solid #ffe7a0;box-shadow:0 0 20px #ffb847aa}
-    body:not(.page-admin):not(.page-screen) .spin{position:relative;z-index:4;margin-top:8px;padding:11px 24px;border:1px solid #ffe19a;border-radius:7px;background:linear-gradient(135deg,#ffe39a,#b9721d 52%,#71320d);color:#291207;font-weight:900;letter-spacing:.15em;text-shadow:0 1px #fff2c5;box-shadow:0 0 0 3px #4a220e,0 0 22px #ffbd4e55,0 8px 20px #0009}
-    body:not(.page-admin):not(.page-screen) .spin:disabled{color:#60421f;filter:saturate(.72)}
-    body:not(.page-admin):not(.page-screen) .hint{position:relative;z-index:4;color:#f2d7a5;text-shadow:0 2px 5px #000;margin-top:5px}
-    @media(max-width:800px){body:not(.page-admin):not(.page-screen) .wrap{grid-template-rows:auto auto clamp(220px,37vh,330px) minmax(0,1fr);gap:2px;padding:6px 10px 4px}body:not(.page-admin):not(.page-screen) .vote-board h2{font-size:clamp(13px,3.4vw,18px);letter-spacing:.1em}body:not(.page-admin):not(.page-screen) .gauge-window{width:auto;height:min(31vh,280px);max-width:96vw}body:not(.page-admin):not(.page-screen) .static-needle-mask{top:20.7%;bottom:23.7%;width:2.2%}body:not(.page-admin):not(.page-screen) .needle{top:20.5%;height:55%;min-width:7px;width:1.35%}body:not(.page-admin):not(.page-screen) .needle-hub{top:74%;width:7%}body:not(.page-admin):not(.page-screen) .wheel-area:before{width:min(43vh,420px);opacity:.68}body:not(.page-admin):not(.page-screen) .wheel-shell{width:min(29vh,60vw,300px);max-width:300px;align-self:center;margin-top:8px;padding:9px}body:not(.page-admin):not(.page-screen) .wheel-shell:after{-webkit-mask:radial-gradient(circle,transparent 0 79%,#000 80% 84%,transparent 85%);mask:radial-gradient(circle,transparent 0 79%,#000 80% 84%,transparent 85%)}body:not(.page-admin):not(.page-screen) .spin{margin-top:5px;padding:8px 17px;font-size:10px}body:not(.page-admin):not(.page-screen) .hint{margin-top:3px;font-size:9px}}
-
-    @media(max-height:900px) and (min-width:801px){body:not(.page-admin):not(.page-screen) .wrap{grid-template-rows:auto auto clamp(220px,34vh,315px) minmax(0,1fr)}body:not(.page-admin):not(.page-screen) .gauge-window{height:min(27vh,245px)}body:not(.page-admin):not(.page-screen) .wheel-shell{width:min(24vh,26vw,240px);margin-top:12px;padding:8px}body:not(.page-admin):not(.page-screen) .wheel-title{font-size:clamp(12px,1.4vw,17px);padding:4px 12px}body:not(.page-admin):not(.page-screen) .spin{margin-top:5px;padding:8px 18px}body:not(.page-admin):not(.page-screen) .hint{margin-top:2px}}
-
-    /* Кликабельные панели из кадра игрового автомата */
-    body:not(.page-admin):not(.page-screen) .choices{width:min(100%,720px);justify-content:center;gap:10px;margin:16px auto 2px}
-    body:not(.page-admin):not(.page-screen) .choice{position:relative;flex:0 1 30%;width:220px;max-width:220px;min-width:0;height:auto;aspect-ratio:1.12;padding:0;border:0;border-radius:7px;background-color:transparent;background-image:url("neon-wheel-buttons.webp");background-repeat:no-repeat;background-size:450% auto;color:transparent;font-size:0;line-height:0;letter-spacing:normal;text-shadow:none;box-shadow:none;filter:drop-shadow(0 5px 8px #080403aa);cursor:pointer;transition:transform .18s ease,filter .18s ease}
-    body:not(.page-admin):not(.page-screen) .choice.red{background-image:url("neon-wheel-buttons.webp")!important;background-size:450% auto!important;background-repeat:no-repeat!important;background-position:22% 80%!important}
-    body:not(.page-admin):not(.page-screen) .choice.black{background-image:url("neon-wheel-buttons.webp")!important;background-size:450% auto!important;background-repeat:no-repeat!important;background-position:50% 80%!important}
-    body:not(.page-admin):not(.page-screen) .choice.blue{background-image:url("neon-wheel-buttons.webp")!important;background-size:450% auto!important;background-repeat:no-repeat!important;background-position:78% 80%!important}
-    body:not(.page-admin):not(.page-screen) .choice:after{display:none}
-    body:not(.page-admin):not(.page-screen) .choice:hover{transform:translateY(-3px) scale(1.025);filter:drop-shadow(0 0 10px #ffc45a99) drop-shadow(0 6px 8px #080403aa)}
-    body:not(.page-admin):not(.page-screen) .choice[aria-pressed=true]{box-shadow:none;filter:drop-shadow(0 0 12px #ffd56dcc) drop-shadow(0 5px 8px #080403aa)}
-    body:not(.page-admin):not(.page-screen) .choice:focus-visible{outline:2px solid #ffe6a0;outline-offset:4px}
-    @media(max-width:800px){body:not(.page-admin):not(.page-screen) .choices{width:min(100%,620px);gap:6px;margin:12px auto 0}body:not(.page-admin):not(.page-screen) .choice{flex:0 1 31%;width:auto;max-width:31vw;aspect-ratio:1.12;background-size:450% auto}}
-    @media(max-width:800px){body:not(.page-admin):not(.page-screen) .wrap{grid-template-rows:auto auto clamp(220px,24vh,280px) minmax(0,1fr)}body:not(.page-admin):not(.page-screen) .gauge-window{height:min(20vh,230px)}body:not(.page-admin):not(.page-screen) .wheel-area:before{width:min(34vh,340px)}body:not(.page-admin):not(.page-screen) .wheel-shell{width:min(22vh,54vw,220px);max-width:220px;margin-top:4px}}
-    @media(max-height:900px) and (min-width:801px){body:not(.page-admin):not(.page-screen) .wrap{grid-template-rows:auto auto clamp(210px,26vh,245px) minmax(0,1fr)}body:not(.page-admin):not(.page-screen) .choices{width:min(100%,620px);margin-top:12px}body:not(.page-admin):not(.page-screen) .choice{max-width:min(23vw,170px)}body:not(.page-admin):not(.page-screen) .gauge-window{height:min(19vh,170px)}body:not(.page-admin):not(.page-screen) .wheel-shell{width:min(18vh,22vw,170px);max-width:170px;margin-top:5px}}
-
-    /* Более свободная композиция: крупное табло и героини за колесом */
-    body:not(.page-admin):not(.page-screen){overflow:visible!important}
-    body:not(.page-admin):not(.page-screen) .wrap{height:auto!important;min-height:100dvh;max-height:none!important;overflow:visible!important;grid-template-rows:auto auto auto minmax(850px,auto)!important;gap:24px!important;padding-bottom:48px!important}
-    body:not(.page-admin):not(.page-screen) .hero{padding-top:14px!important}
-    body:not(.page-admin):not(.page-screen) .choices{margin-top:16px!important}
-    body:not(.page-admin):not(.page-screen) .vote-board{position:relative!important;isolation:isolate;grid-row:3;min-height:0!important;height:auto!important;margin:24px auto 0!important;padding:20px 0 12px!important;align-content:start!important;gap:14px!important}
-    body:not(.page-admin):not(.page-screen) .vote-board h2{font-size:clamp(30px,4vw,48px)!important;letter-spacing:.14em!important;margin:0 0 8px!important;padding:8px 22px!important}
-    body:not(.page-admin):not(.page-screen) .vote-board .gauge-window{width:min(60vw,760px)!important;height:auto!important;max-width:none!important;aspect-ratio:16/9!important}
-    body:not(.page-admin):not(.page-screen) .woman-vote{display:block!important;position:absolute;z-index:1;bottom:10px;width:min(24vw,320px);height:min(36vh,430px);object-fit:contain;object-position:center bottom;filter:drop-shadow(0 0 15px #e6a94a66);pointer-events:none}
-    body:not(.page-admin):not(.page-screen) .woman-vote.brunette{left:max(0px,calc(50% - min(60vw,760px)/2 - min(24vw,320px)))}
-    body:not(.page-admin):not(.page-screen) .woman-vote.blonde{right:max(0px,calc(50% - min(60vw,760px)/2 - min(24vw,320px)))}
-    body:not(.page-admin):not(.page-screen) .wheel-area{grid-row:4;min-height:900px!important;overflow:visible!important;margin-top:18px!important}
-    body:not(.page-admin):not(.page-screen) .wheel-area:before{top:53%;width:min(76vh,920px)!important;opacity:.54}
-    body:not(.page-admin):not(.page-screen) .women-cast{display:block!important;position:absolute;z-index:0;left:50%;top:42px;width:min(86vw,1020px);height:min(72vh,820px);object-fit:contain;object-position:center bottom;transform:translateX(-50%);filter:drop-shadow(0 0 20px #e8a75255);pointer-events:none}
-    body:not(.page-admin):not(.page-screen) .hero-cast{z-index:1!important;top:clamp(100px,22vh,240px)!important;width:min(96vw,1120px)!important;height:min(66vh,700px)!important;object-fit:contain!important;object-position:center bottom!important}
-    body:not(.page-admin):not(.page-screen) .wheel-shell{z-index:2!important;width:min(56vh,44vw,620px)!important;max-width:620px!important;margin-top:120px!important}
-    @media(max-width:800px){body:not(.page-admin):not(.page-screen) .wrap{grid-template-rows:auto auto auto minmax(700px,auto)!important;gap:14px!important;padding-bottom:36px!important}body:not(.page-admin):not(.page-screen) .vote-board{margin-top:18px!important;gap:8px!important}body:not(.page-admin):not(.page-screen) .vote-board h2{font-size:clamp(22px,6vw,34px)!important}body:not(.page-admin):not(.page-screen) .vote-board .gauge-window{width:min(94vw,600px)!important}body:not(.page-admin):not(.page-screen) .woman-vote{bottom:0;width:28vw;height:min(30vh,300px)}body:not(.page-admin):not(.page-screen) .woman-vote.brunette{left:0}body:not(.page-admin):not(.page-screen) .woman-vote.blonde{right:0}body:not(.page-admin):not(.page-screen) .wheel-area{min-height:680px!important;margin-top:8px!important}body:not(.page-admin):not(.page-screen) .wheel-area:before{width:min(84vw,520px)!important}body:not(.page-admin):not(.page-screen) .hero-cast{top:clamp(90px,19vh,170px)!important;width:110vw!important;height:min(52vh,520px)!important}body:not(.page-admin):not(.page-screen) .wheel-shell{width:min(82vw,52vh,440px)!important;margin-top:65px!important}}
-
-
-
-    .gauge-step-setting{display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin:12px 0 22px;padding:14px 16px;border:1px solid #d1a45d;background:#f8ebd1;color:#68441e;font-size:13px;font-weight:800}
-    .gauge-step-setting label{display:grid;gap:6px;min-width:230px}.gauge-step-setting input{width:100%;border:1px solid #d1b78a;background:#fff8e9;border-radius:3px;padding:10px;color:#2d1a10;font:inherit}.gauge-step-setting span{padding-bottom:10px}.gauge-step-setting button{white-space:nowrap}
-    @media(max-width:700px){.gauge-step-setting{align-items:stretch;flex-direction:column}.gauge-step-setting label{min-width:0}.gauge-step-setting span{padding:0}}
-    .manual-gauge{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px 16px;margin:12px 0 20px;padding:14px 16px;border:1px solid #d1a45d;background:#f8ebd1}
-    .manual-gauge label{grid-column:1 / -1;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;min-width:0;color:#68441e;font-weight:800;font-size:13px}
-    .manual-gauge input[type=range]{width:100%;accent-color:#a7271b;cursor:pointer}
-    .manual-gauge strong{grid-column:2;grid-row:2;min-width:88px;color:#402515;font-size:13px;text-align:right}
-    .manual-gauge button{grid-column:1;grid-row:2;justify-self:start;white-space:nowrap}
-    @media(max-width:700px){.manual-gauge{grid-template-columns:1fr;gap:10px}.manual-gauge label{font-size:11px}.manual-gauge strong{grid-column:1;grid-row:auto;text-align:left}.manual-gauge button{grid-column:1;grid-row:auto}}
-    /* Полноэкранное горизонтальное табло для ведущих */
-    .page-screen{overflow:hidden!important;background:radial-gradient(ellipse at 50% 0%,#57331d 0%,#24140e 48%,#100908 100%)!important}
-    .page-screen:before{display:none!important}
-    .page-screen .wrap{display:block!important;width:100vw!important;max-width:none!important;height:100dvh!important;max-height:100dvh!important;overflow:hidden!important;padding:clamp(18px,3vh,40px) clamp(16px,3vw,54px)!important}
-    .page-screen .vote-board{position:relative;isolation:isolate;display:grid!important;grid-template-rows:auto minmax(0,1fr) auto auto;justify-items:center;align-content:stretch;align-items:center;width:100%!important;max-width:none!important;height:100%!important;min-height:0!important;margin:0!important;padding:clamp(16px,3vh,36px) 0!important;overflow:visible!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;gap:clamp(8px,1.5vh,18px)!important}
-    .page-screen .vote-board h2{grid-row:1;align-self:center;margin:0!important;padding:0 170px 0 0!important;background:none!important;font-size:clamp(28px,4.3vw,64px)!important;line-height:1.05;letter-spacing:.13em!important;text-align:center}
-    .page-screen .vote-board>p,.page-screen .woman-vote,.page-screen .women-cast,.page-screen .hero-cast{display:none!important}
-    .page-screen .gauge-window{position:relative;grid-row:2;align-self:center;justify-self:center;width:min(92vw,130vh,1500px)!important;height:auto!important;max-width:none!important;max-height:100%;aspect-ratio:16/9!important;margin:0!important;overflow:hidden;filter:drop-shadow(0 10px 30px #000b)!important}
-    .page-screen .gauge-art{display:block;width:100%;height:100%;object-fit:contain}
-    .page-screen .static-needle-mask{position:absolute;z-index:2;left:50%;top:20.7%;bottom:23.7%;width:1.65%;transform:translateX(-50%);background:linear-gradient(90deg,#f3e4ca 0%,#efe0c4 46%,#c58e47 48%,#683d1f 50%,#79000b 52%,#aa1018 100%);pointer-events:none}
-    .page-screen .needle{transition:transform .45s cubic-bezier(.18,.8,.18,1)!important}
-    .page-screen .vote-board .abstain{grid-row:3;display:flex!important;width:min(60vw,720px);max-width:720px;margin:0 auto!important;padding:clamp(10px,1.6vh,18px) 24px!important;justify-self:center;gap:20px;font-size:clamp(16px,1.8vw,24px);background:linear-gradient(100deg,#1453a5,#2879dc,#123c7d);border:1px solid #a8d1ff;box-shadow:0 0 25px #3489ff55;color:#fff}
-    .page-screen .vote-board .abstain b{font-size:clamp(24px,3vw,40px)}
-    .page-screen .vote-numbers{grid-row:4;display:flex!important;justify-content:center;gap:clamp(14px,3vw,42px);margin:0!important;color:#e7cba5;font-size:clamp(12px,1.4vw,18px)}
-    .page-screen .vote-numbers span{padding:7px 14px;border:1px solid #d3a05277;border-radius:3px;background:#09080766}
-    .page-screen .vote-numbers strong{color:#fff1d2;font-size:1.15em}
-    @media(max-width:800px){.page-screen .wrap{padding:14px 10px!important}.page-screen .vote-board{gap:8px!important}.page-screen .vote-board h2{padding:0 108px 0 0!important;font-size:clamp(20px,5vw,34px)!important}.page-screen .gauge-window{width:min(96vw,115vh)!important}.page-screen .vote-board .abstain{width:min(88vw,540px);padding:8px 14px!important}.page-screen .vote-numbers{gap:5px;font-size:10px}.page-screen .vote-numbers span{padding:5px 7px}.page-screen .screen-close{top:10px;right:10px;padding:7px 9px;font-size:9px}}
-
-    /* Отдельное табло повторяет стиль сайта и занимает весь экран без остального контента. */
-    .page-screen{position:relative!important;min-height:100dvh!important;overflow:hidden!important;background:radial-gradient(ellipse at 50% 0%,#493023 0%,#211611 43%,#120d0a 100%)!important;color:#f4e6cf!important}
-    .page-screen .wrap{position:relative!important;display:block!important;width:100vw!important;height:100dvh!important;min-height:100dvh!important;max-height:100dvh!important;max-width:none!important;margin:0!important;padding:clamp(18px,3vh,40px) clamp(16px,3vw,54px)!important;overflow:hidden!important}
-    .page-screen .top,.page-screen .poster-frame,.page-screen .hero,.page-screen .choices,.page-screen .admin-panel,.page-screen .wheel-area,.page-screen .footnote,.page-screen .modal{display:none!important}
-    .page-screen .screen-close{position:fixed!important;z-index:20!important;top:clamp(12px,2vh,24px)!important;right:clamp(12px,2vw,30px)!important;display:inline-flex!important;align-items:center;justify-content:center;padding:10px 16px!important;border:1px solid #f5d78f!important;border-radius:4px!important;background:linear-gradient(135deg,#f0d18a,#b47a35)!important;color:#26160d!important;text-decoration:none!important;text-transform:uppercase;font-size:clamp(10px,1vw,14px)!important;font-weight:850;letter-spacing:.1em;box-shadow:0 5px 18px #0008}
-    .page-screen .vote-board{position:relative!important;isolation:isolate;display:grid!important;grid-template-rows:auto minmax(0,1fr) auto!important;justify-items:center;align-items:center;width:100%!important;height:100%!important;max-width:none!important;min-height:0!important;margin:0!important;padding:clamp(16px,3vh,36px) 0!important;overflow:visible!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;gap:clamp(8px,1.5vh,18px)!important}
-    .page-screen .vote-board h2{grid-row:1;align-self:center;margin:0!important;padding:0!important;color:#ffe3a5!important;background:none!important;font-size:clamp(25px,4vw,58px)!important;line-height:1.05;letter-spacing:.14em!important;text-align:center;text-transform:uppercase;text-shadow:0 0 14px #ffcb70aa,0 2px 4px #000}
-    .page-screen .vote-board>p,.page-screen .woman-vote,.page-screen .women-cast,.page-screen .hero-cast{display:none!important}
-    .page-screen .gauge-window{position:relative;grid-row:2;align-self:center;justify-self:center;width:min(92vw,calc((100dvh - 190px)*1.7778),1500px)!important;height:auto!important;max-width:none!important;max-height:100%!important;aspect-ratio:16/9!important;margin:0!important;overflow:hidden;filter:drop-shadow(0 10px 30px #000b)!important}
-    .page-screen .gauge-art{display:block;width:100%;height:100%;object-fit:contain}
-    .page-screen .static-needle-mask{position:absolute;z-index:2;left:50%;top:20.7%;bottom:23.7%;width:1.65%;transform:translateX(-50%);background:linear-gradient(90deg,#f3e4ca 0%,#efe0c4 46%,#c58e47 48%,#683d1f 50%,#79000b 52%,#aa1018 100%);pointer-events:none}
-    /* Координаты и точка вращения совпадают с индикатором на основном сайте. */
-    .page-screen .needle{position:absolute!important;left:50%!important;top:20.5%!important;bottom:auto!important;width:1.35%!important;min-width:9px!important;max-width:18px!important;height:55%!important;border-radius:10px 10px 4px 4px!important;background:linear-gradient(90deg,#573119,#f6ce73 25%,#fff0bc 50%,#c58b35 76%,#4a2713)!important;box-shadow:0 0 0 2px #32160b,0 0 0 4px #f6c75e,0 0 18px #ffcf67!important;transform-origin:50% 100%!important;transition:transform .75s cubic-bezier(.18,.8,.18,1)!important}
-    .page-screen .needle-hub{position:absolute!important;left:50%!important;top:74%!important;bottom:auto!important;width:7%!important;height:auto!important;aspect-ratio:1;transform:translate(-50%,-50%)!important;border:4px solid #ffe7aa!important;background:radial-gradient(circle at 35% 30%,#fff0ba,#d9912e 45%,#5a260f 75%)!important;box-shadow:0 0 0 4px #4b2310,0 0 22px #ffc654aa!important}
-    .page-screen .vote-board .abstain{grid-row:3;display:flex!important;width:min(60vw,720px);max-width:720px;margin:0 auto!important;padding:clamp(10px,1.6vh,18px) 24px!important;justify-self:center;gap:20px;font-size:clamp(16px,1.8vw,24px);background:linear-gradient(100deg,#1453a5,#2879dc,#123c7d);border:1px solid #a8d1ff;box-shadow:0 0 25px #3489ff55;color:#fff}
-    .page-screen .vote-board .abstain b{font-size:clamp(24px,3vw,40px)}
-    .page-screen .vote-numbers{display:none!important}
-    @media(max-width:800px){.page-screen .wrap{padding:12px 8px!important}.page-screen .vote-board{gap:8px!important;padding-top:44px!important}.page-screen .vote-board h2{font-size:clamp(20px,5vw,34px)!important}.page-screen .gauge-window{width:min(96vw,calc((100dvh - 150px)*1.7778))!important}.page-screen .vote-board .abstain{width:min(88vw,540px);padding:8px 14px!important}.page-screen .screen-close{top:8px!important;right:8px!important;padding:7px 9px!important;font-size:9px!important}}
-
-    .admin-action-feedback{min-height:24px;margin:0 0 16px;color:#68441e;font-size:14px;font-weight:800}
-    .admin-tools button:active,.admin-tools a:active{transform:translateY(1px);filter:brightness(.9)}
-    /* Табло занимает доступную площадь экрана и сохраняет пропорции индикатора. */
-    .page-screen .wrap{width:100vw!important;height:100vh!important;height:100dvh!important;min-height:100svh!important;max-height:none!important;padding:clamp(10px,2vh,28px) clamp(10px,2vw,36px)!important}
-    .page-screen .vote-board{grid-template-rows:auto minmax(0,1fr)!important;gap:clamp(6px,1.4vh,18px)!important;padding:0!important}
-    .page-screen .vote-board h2{padding:0!important;margin:0!important;font-size:clamp(20px,min(3.2vw,6vh),64px)!important;letter-spacing:.08em!important}
-    .page-screen .vote-board .gauge-window{grid-row:2;width:min(96vw,calc((100dvh - clamp(96px,14vh,180px))*1.7778),3200px)!important;height:auto!important;max-height:calc(100dvh - clamp(96px,14vh,180px))!important;aspect-ratio:16/9!important}
-    .page-screen .vote-board .abstain{display:none!important}
-    .page-screen .vote-numbers{display:none!important}
-    .mobile-host-pair{display:none}
-    @media(max-width:800px){
-      body:not(.page-admin):not(.page-screen) .hero-cast{display:none!important}
-      body:not(.page-admin):not(.page-screen) .mobile-host-pair{display:block;position:absolute;z-index:1;left:50%;top:clamp(32px,5vh,44px);transform:translateX(-50%);width:min(100vw,560px);height:clamp(220px,34vh,290px);pointer-events:none;filter:drop-shadow(0 0 16px #d99a4d66)}
-      body:not(.page-admin):not(.page-screen) .mobile-host-pair .mobile-host{position:absolute;top:0;width:60%;height:100%;background-image:url('hosts-two-men-flanking-wheel.webp');background-repeat:no-repeat;background-size:240% auto}
-      body:not(.page-admin):not(.page-screen) .mobile-host-pair .mobile-host.left{left:-3%;background-position:left top}
-      body:not(.page-admin):not(.page-screen) .mobile-host-pair .mobile-host.right{right:-3%;background-position:right top}
-      body:not(.page-admin):not(.page-screen) .wheel-area{min-height:clamp(760px,94vh,900px)!important}
-      body:not(.page-admin):not(.page-screen) .wheel-shell{margin-top:clamp(180px,26vh,220px)!important}
-      body:not(.page-admin):not(.page-screen) .spin{width:min(94vw,390px)!important;min-height:54px!important;margin-top:16px!important;padding:14px 24px!important;font-size:clamp(14px,3.8vw,17px)!important;letter-spacing:.1em!important}
-      body:not(.page-admin):not(.page-screen) .woman-vote{z-index:0!important;width:min(18vw,72px)!important;height:min(22vh,190px)!important;bottom:0!important}
-      body:not(.page-admin):not(.page-screen) .woman-vote.brunette{left:0!important}
-      body:not(.page-admin):not(.page-screen) .woman-vote.blonde{right:0!important}
-      body:not(.page-admin):not(.page-screen) .vote-board .gauge-window{position:relative!important;z-index:2!important}
-      body:not(.page-admin):not(.page-screen) .vote-board h2,body:not(.page-admin):not(.page-screen) .vote-board .abstain,body:not(.page-admin):not(.page-screen) .vote-board .vote-numbers{position:relative;z-index:2}
-    }
-    button.choice{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-      .admin-login-overlay{display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;padding:20px;background:#100807ef}.admin-login-overlay.show{display:flex}.admin-login-card{width:min(100%,430px);padding:30px 24px;background:linear-gradient(150deg,#fff3dc,#ead4ac);border:1px solid #d1a45d;color:#28180e;box-shadow:0 18px 50px #0008;text-align:center}.admin-login-card h2{margin:0 0 10px;font:500 30px Georgia,serif}.admin-login-card p{color:#725b43;line-height:1.45}.admin-login-card input{width:100%;margin:10px 0;padding:14px 16px;border:1px solid #c6a36d;background:#fff8e9;font:700 20px Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:.25em;text-align:center}.admin-login-card button{width:100%;padding:13px 16px;border:1px solid #bc8d4e;background:#442817;color:#f5e1bb;font-weight:800}.admin-login-card [role=status]{min-height:1.4em;margin-bottom:0;font-size:13px}
-    .page-screen .vote-board{grid-template-rows:auto minmax(0,1fr) auto!important}
-    .page-screen .vote-board .vote-numbers{grid-row:3;display:flex!important;justify-content:center;gap:clamp(8px,2vw,26px);margin:0!important;color:#e7cba5;font-size:clamp(12px,1.4vw,18px)}
-    .page-screen .vote-numbers span{padding:7px 12px;border:1px solid #d3a05277;border-radius:3px;background:#09080766}
-    .page-screen .vote-numbers strong{color:#fff1d2;font-size:1.15em}
-    @media(max-width:800px){.page-screen .vote-board{gap:6px!important}.page-screen .vote-numbers{gap:4px;font-size:10px}.page-screen .vote-numbers span{padding:5px 6px}}
-    .live-vote-summary{display:flex;flex-wrap:wrap;gap:8px 14px;margin:14px 0 22px;padding:12px 14px;border:1px solid #d1a45d;background:#f5e2bf;color:#68441e}
-    .live-vote-summary span{font-size:14px;font-weight:750}
-    .live-vote-summary strong{margin-left:4px;font-size:20px;color:#3b230f}
-    @media(max-width:700px){.live-vote-summary{gap:7px 10px;padding:11px}.live-vote-summary span{font-size:12px}.live-vote-summary strong{font-size:18px}}
-  </style>
+  <meta name="description" content="Голосуй на шоу «Личное дело»: психология или нумерология? Следи за стрелкой на табло и крути барабан с подарками.">
+  <meta property="og:title" content="Шоу «Личное дело» — сделай свой выбор">
+  <meta property="og:description" content="Психология или нумерология? Голосуй вместе с залом и крути барабан с подарками.">
+  <meta property="og:image" content="img/show-poster.webp">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23271410' stroke='%23e9b95c' stroke-width='4'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-weight='700' font-size='28' fill='%23ffe2a0'%3E%D0%9B%D0%94%3C/text%3E%3C/svg%3E">
+  <link rel="preload" href="assets/fonts/playfair-display-cyrillic-900-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/manrope-cyrillic-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="img/neon-wheel-buttons.webp" as="image">
+  <link rel="stylesheet" href="assets/style.css?v=1">
 </head>
 <body>
-  <main class="wrap">
-    <header class="top"><span class="brand">Личное дело</span><a class="host-only" href="?screen=1" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">Вывести табло</a></header>
-    <a class="screen-close" href="./index.html" aria-label="Закрыть табло и вернуться на сайт">✕ Закрыть табло</a>
-    <figure class="poster-frame"><img src="show-poster.webp" alt="Афиша научно-популярного шоу «Личное дело» - тайны под увеличением"></figure>
+  <div class="backdrop" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Личное дело — на главную"><span class="brand-mark">ЛД</span><span class="brand-name">Личное дело</span></a>
+    <a class="topbar-link host-only" href="?screen=1" target="_blank" rel="noopener">Вывести табло ↗</a>
+  </header>
+
+  <main class="wrap" id="viewer">
     <section class="hero">
-      <div class="eyebrow">Научно-популярное шоу</div>
-      <h1>Личное дело</h1>
-      <h2 class="choice-title">Сделай свой выбор</h2>
-      <div class="choices" role="group" aria-label="Выбери направление">
-        <button class="choice red" data-choice="Психология" aria-label="Психология" aria-pressed="false">Психология</button>
-        <button class="choice black" data-choice="Нумерология" aria-label="Нумерология" aria-pressed="false">Нумерология</button>
-        <button class="choice blue" data-choice="Свой вариант" aria-label="Свой вариант" aria-pressed="false">Свой вариант</button>
+      <p class="eyebrow">Научно-популярное шоу</p>
+      <h1 class="title">Личное дело</h1>
+      <p class="lead">Психология или нумерология — что тебе ближе? Голосуй, и стрелка на большом экране сдвинется вместе с залом.</p>
+    </section>
+
+    <section class="block vote" aria-labelledby="voteTitle">
+      <h2 class="step-title" id="voteTitle"><span class="step-n">1</span>Сделай свой выбор</h2>
+      <div class="choices" role="group" aria-labelledby="voteTitle">
+        <button class="choice" type="button" data-choice="Психология" aria-pressed="false"><span class="choice-art art-psych" aria-hidden="true"></span><span class="choice-badge" aria-hidden="true"></span><span class="sr-only">Психология</span></button>
+        <button class="choice" type="button" data-choice="Нумерология" aria-pressed="false"><span class="choice-art art-numer" aria-hidden="true"></span><span class="choice-badge" aria-hidden="true"></span><span class="sr-only">Нумерология</span></button>
+        <button class="choice" type="button" data-choice="Свой вариант" aria-pressed="false"><span class="choice-art art-own" aria-hidden="true"></span><span class="choice-badge" aria-hidden="true"></span><span class="sr-only">Свой вариант</span></button>
       </div>
+      <p class="vote-status" id="voteStatus" aria-live="polite">Нажми на карточку — голос сразу попадёт на табло.</p>
     </section>
-    <section class="vote-board" aria-live="polite">
-      <h2>Выбор всех зрителей</h2><p>Стрелка показывает соотношение голосов психологии и нумерологии</p>
-      <img class="woman-vote brunette" src="brunette-vote.webp" alt="Брюнетка со стороны психологии"><img class="woman-vote blonde" src="blonde-vote.webp" alt="Блондинка со стороны нумерологии">
-      <div class="gauge-window"><img class="gauge-art" src="detective-indicator.webp" alt="Индикатор голосов: психология и нумерология"><span class="static-needle-mask" aria-hidden="true"></span><div class="needle" id="needle" aria-hidden="true"></div><div class="needle-hub" aria-hidden="true"></div></div>
-      <div class="abstain"><span>Свои варианты</span><b id="abstainCount">0</b></div>
-      <div class="vote-numbers"><span>Психология<strong id="psychCount">0</strong></span><span>Нумерология<strong id="numerCount">0</strong></span><span>Всего<strong id="totalCount">0</strong></span></div>
+
+    <section class="block board vote-board" aria-labelledby="boardTitle">
+      <h2 class="step-title" id="boardTitle"><span class="step-n">2</span><span class="board-title-text">Выбор всех зрителей</span></h2>
+      <div class="board-stage">
+        <img class="woman brunette" src="img/brunette-vote.webp" alt="" width="445" height="711" loading="lazy">
+        <div class="gauge-window">
+          <img class="gauge-art" src="img/detective-indicator.webp" alt="Индикатор голосов: слева психология, справа нумерология" width="1672" height="941">
+          <span class="static-needle-mask" aria-hidden="true"></span>
+          <div class="needle" id="needle" aria-hidden="true"></div>
+          <div class="needle-hub" aria-hidden="true"></div>
+          <span class="live-dot" id="liveDot" title="Связь с голосованием"></span>
+        </div>
+        <img class="woman blonde" src="img/blonde-vote.webp" alt="" width="464" height="710" loading="lazy">
+      </div>
+      <div class="board-legend" aria-hidden="true">
+        <span class="legend-side"><img src="img/brunette-vote.webp" alt="" width="34" height="34">Психология</span>
+        <span class="legend-hint">стрелка показывает выбор зала</span>
+        <span class="legend-side">Нумерология<img src="img/blonde-vote.webp" alt="" width="34" height="34"></span>
+      </div>
+      <div class="score" aria-live="polite">
+        <div class="score-item psych"><span>Психология</span><strong id="psychCount">0</strong></div>
+        <div class="score-item own"><span>Свои варианты</span><strong id="abstainCount">0</strong></div>
+        <div class="score-item numer"><span>Нумерология</span><strong id="numerCount">0</strong></div>
+        <div class="score-item total"><span>Всего</span><strong id="totalCount">0</strong></div>
+      </div>
+      <aside class="screen-qr" id="screenQr" aria-label="Голосуй с телефона">
+        <div class="qr-box" id="qrBox"></div>
+        <p>Голосуй с телефона<b id="qrHost"></b></p>
+      </aside>
     </section>
-    <section class="wheel-area" aria-label="Колесо призов">
-      <h2 class="wheel-title">Крути барабан, выигрывай подарки</h2>
-      <img class="hero-cast" src="hosts-two-men-flanking-wheel.webp" alt="Два ведущих шоу по сторонам барабана: мужчина в оранжевом пиджаке и мужчина в красном худи">
-      <div class="mobile-host-pair" aria-hidden="true"><span class="mobile-host left"></span><span class="mobile-host right"></span></div>
-      <div class="wheel-shell"><div class="wheel" id="wheel"></div></div>
-      <button class="spin" id="spin" disabled>Сначала сделай свой выбор</button>
-      <p class="hint" id="hint" aria-live="polite">Сделай выбор и крути барабан.</p>
+
+    <section class="block wheel-area" id="wheelArea" aria-labelledby="wheelTitle">
+      <h2 class="step-title" id="wheelTitle"><span class="step-n">3</span>Крути барабан — выигрывай подарки</h2>
+      <div class="stage">
+        <span class="host left" role="img" aria-label="Ведущий шоу в оранжевом пиджаке"></span>
+        <div class="wheel-shell">
+          <svg class="wheel-pointer" viewBox="0 0 40 46" aria-hidden="true"><defs><linearGradient id="pg" x1="0" x2="1"><stop offset="0" stop-color="#8a5320"/><stop offset=".5" stop-color="#ffe6a6"/><stop offset="1" stop-color="#a0621f"/></linearGradient></defs><path d="M3 3h34L20 43z" fill="url(#pg)" stroke="#3a1c0b" stroke-width="2.5" stroke-linejoin="round"/></svg>
+          <div class="wheel" id="wheel"></div>
+          <div class="wheel-hub" aria-hidden="true">ЛД</div>
+        </div>
+        <span class="host right" role="img" aria-label="Ведущий шоу в красном худи и шляпе"></span>
+      </div>
+      <button class="spin" id="spin" type="button" disabled>Сначала проголосуй</button>
+      <p class="hint" id="hint" aria-live="polite">Барабан откроется после голосования.</p>
     </section>
-    <p class="footnote"><strong>Важно:</strong> попытка сохраняется в этом браузере на этом устройстве. Количество ограниченных призов здесь не учитывается между разными посетителями.</p>
+
+    <p class="footnote">Крутить барабан можно один раз с одного устройства.</p>
   </main>
-  <section class="admin-panel" id="adminPanel">
-    <h2>Пульт управления</h2><p class="intro">Голоса зрителей поступают с общего сервера. После показа нулей следующий голос участника вернёт табло к реальным результатам. Другие ручные цифры остаются отдельно от голосов участников.</p>
-    <h3>Реальные голоса зрителей</h3>
-    <div class="live-vote-summary" aria-live="polite"><span>Психология <strong id="realPsychCount">0</strong></span><span>Нумерология <strong id="realNumerCount">0</strong></span><span>Свои варианты <strong id="realAbstainCount">0</strong></span><span>Всего <strong id="realTotalCount">0</strong></span></div>
-    <h3>Цифры для показа на табло</h3><p class="intro">Эти цифры можно менять отдельно от реальных голосов, например для хода шоу.</p>
-    <div class="score-fields">
-      <label>Психология<input id="editPsych" type="number" min="0" step="1"></label>
-      <label>Нумерология<input id="editNumer" type="number" min="0" step="1"></label>
-      <label>Свои варианты<input id="editAbstain" type="number" min="0" step="1"></label>
+
+  <a class="screen-close" href="./" aria-label="Закрыть табло и вернуться на сайт">✕ Закрыть табло</a>
+
+  <!-- Подтверждение голоса -->
+  <div class="voted" id="voted" hidden>
+    <div class="voted-card" role="status" aria-live="assertive">
+      <svg class="voted-check" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="23"/><path d="M15 27.5l7.5 7.5L38 18.5"/></svg>
+      <p class="voted-title" id="votedTitle">Голос учтён!</p>
+      <p class="voted-choice" id="votedChoice"></p>
+      <p class="voted-note" id="votedNote"></p>
+      <button class="btn btn-gold voted-next" id="votedNext" type="button">Крутить барабан ↓</button>
+      <span class="voted-timer" aria-hidden="true"></span>
     </div>
-    <h3>Количество голосов</h3><p class="intro">Укажи, сколько голосов ожидается. Сайт сам рассчитает деления и настроит шаг стрелки. Расчёт виден только ведущему.</p>
-    <div class="gauge-step-setting"><label for="expectedVotes">ОБЩЕЕ КОЛИЧЕСТВО ГОСТЕЙ <input id="expectedVotes" type="number" min="1" max="10000" step="1" value="50"></label><span id="gaugeStepSummary">Шаг стрелки: 1/25 от центра к краю</span><button class="light" id="saveExpectedVotes" type="button">Сохранить количество</button></div>
-    <h3>Ручное управление стрелкой</h3>
-    <p class="intro">Бегунок временно задаёт положение стрелки. Новое голосование участников переключает её обратно на реальные цифры.</p>
-    <div class="manual-gauge"><label for="gaugeControl">Психология <input id="gaugeControl" type="range" min="0" max="100" step="1" value="50" aria-label="Баланс от психологии к нумерологии"> Нумерология</label><strong id="gaugeControlValue">50 / 50</strong><button class="light" id="followVotes" type="button">Следовать реальным цифрам</button></div>
-    <h3>Ответы «Свой вариант» <span id="ownResponseCount"></span></h3><p class="intro">Предложения зрителей со всех устройств.</p><div class="own-responses" id="ownResponses"></div>
-    <div class="admin-tools"><button type="button" id="saveVotes">Показать эти цифры на табло</button><button type="button" class="light" id="resetVotes">Удалить все голоса</button><button type="button" class="light" id="resetAttempts">Вернуть право крутить (этот браузер)</button><a class="light" id="openScreen" href="?screen=1" target="_blank" rel="noopener">Вывести табло в новой вкладке</a></div>
-    <p class="admin-action-feedback" id="adminActionFeedback" role="status" aria-live="polite"></p>
-    <h3>Подарки на колесе</h3><p class="intro">Измени название, количество или ссылки, затем нажми «Сохранить подарки». Изменения сохраняются в этом браузере и сразу появляются в соседних вкладках.</p>
-    <div class="ticket-stat total-gifts-stat"><span>Всего подарков выиграно: <strong id="totalGiftCount">0</strong> из 50</span><div class="ticket-progress"><i id="totalGiftProgress"></i></div></div>
-    <div class="ticket-stat"><span>Билеты на шоу «Личное дело» выиграны: <strong id="ticketWinCount">0</strong> из 15</span><div class="ticket-progress"><i id="ticketWinProgress"></i></div></div>
-    <div class="prize-list" id="prizeList"></div>
-    <div class="admin-tools"><button id="addPrize">+ Добавить подарок</button><button id="savePrizes">Сохранить подарки</button></div>
-    <p class="admin-foot">Ручные цифры и положение стрелки сохраняются на сервере и видны на общем табло для всех устройств. Реальные голоса зрителей хранятся отдельно. Вход в пульт доступен четырём ведущим по общему коду.</p>
+  </div>
+  <div class="burst-layer" id="burstLayer" aria-hidden="true"></div>
+
+  <!-- Пульт ведущих -->
+  <section class="admin-panel" id="adminPanel" aria-labelledby="adminTitle">
+    <header class="admin-head">
+      <h2 id="adminTitle">Пульт управления</h2>
+      <p class="intro">Голоса зрителей приходят на общий сервер. После показа нулей первый же голос зрителя вернёт табло к реальным результатам. Другие ручные цифры живут отдельно от голосов.</p>
+      <p class="admin-action-feedback" id="adminActionFeedback" role="status" aria-live="polite"></p>
+    </header>
+
+    <div class="admin-card">
+      <h3>Реальные голоса зрителей</h3>
+      <div class="live-vote-summary" aria-live="polite">
+        <span>Психология <strong id="realPsychCount">0</strong></span>
+        <span>Нумерология <strong id="realNumerCount">0</strong></span>
+        <span>Свои варианты <strong id="realAbstainCount">0</strong></span>
+        <span>Всего <strong id="realTotalCount">0</strong></span>
+      </div>
+      <div class="admin-tools">
+        <a class="btn btn-dark" id="openScreen" href="?screen=1" target="_blank" rel="noopener">Вывести табло в новой вкладке ↗</a>
+        <button class="btn btn-danger" type="button" id="resetVotes">Удалить все голоса</button>
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <h3>Цифры для показа на табло</h3>
+      <p class="intro">Можно показать свои цифры для хода шоу — реальные голоса при этом не меняются.</p>
+      <div class="score-fields">
+        <label>Психология<input id="editPsych" type="number" min="0" step="1" inputmode="numeric"></label>
+        <label>Нумерология<input id="editNumer" type="number" min="0" step="1" inputmode="numeric"></label>
+        <label>Свои варианты<input id="editAbstain" type="number" min="0" step="1" inputmode="numeric"></label>
+      </div>
+      <div class="admin-tools">
+        <button class="btn btn-dark" type="button" id="saveVotes">Показать эти цифры на табло</button>
+        <button class="btn btn-light" type="button" id="followVotes">Вернуть реальные цифры</button>
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <h3>Ход стрелки</h3>
+      <p class="intro">Сколько гостей ожидается — сайт сам рассчитает шаг стрелки.</p>
+      <div class="gauge-step-setting">
+        <label for="expectedVotes">Общее количество гостей<input id="expectedVotes" type="number" min="1" max="10000" step="1" value="50" inputmode="numeric"></label>
+        <button class="btn btn-dark" id="saveExpectedVotes" type="button">Сохранить</button>
+        <span id="gaugeStepSummary">Шаг стрелки: 1/25 от центра к краю</span>
+      </div>
+      <h3>Ручное управление стрелкой</h3>
+      <p class="intro">Бегунок временно задаёт положение стрелки. Новый голос зрителя вернёт её к реальным цифрам.</p>
+      <div class="manual-gauge">
+        <label for="gaugeControl"><span>Психология</span><input id="gaugeControl" type="range" min="0" max="100" step="1" value="50" aria-label="Баланс от психологии к нумерологии"><span>Нумерология</span></label>
+        <strong id="gaugeControlValue">50 / 50</strong>
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <h3>Ответы «Свой вариант» <span id="ownResponseCount"></span></h3>
+      <p class="intro">Предложения зрителей со всех устройств.</p>
+      <div class="own-responses" id="ownResponses"></div>
+    </div>
+
+    <div class="admin-card">
+      <h3>Подарки на колесе</h3>
+      <p class="intro">Измени название, количество или ссылки и нажми «Сохранить подарки». Изменения сохраняются только в этом браузере.</p>
+      <div class="ticket-stat"><span>Всего подарков выиграно: <strong id="totalGiftCount">0</strong> из 50</span><div class="ticket-progress"><i id="totalGiftProgress"></i></div></div>
+      <div class="ticket-stat"><span>Билеты на шоу «Личное дело»: <strong id="ticketWinCount">0</strong> из 15</span><div class="ticket-progress"><i id="ticketWinProgress"></i></div></div>
+      <div class="prize-list" id="prizeList"></div>
+      <div class="admin-tools">
+        <button class="btn btn-light" type="button" id="addPrize">+ Добавить подарок</button>
+        <button class="btn btn-dark" type="button" id="savePrizes">Сохранить подарки</button>
+        <button class="btn btn-light" type="button" id="resetAttempts">Вернуть право крутить (этот браузер)</button>
+      </div>
+    </div>
+    <p class="admin-foot">Ручные цифры и стрелка сохраняются на сервере и видны на табло на всех устройствах. Вход в пульт — по общему коду ведущих.</p>
   </section>
-  <div class="admin-login-overlay" id="adminLoginOverlay" role="dialog" aria-modal="true" aria-labelledby="adminLoginTitle"><div class="admin-login-card"><h2 id="adminLoginTitle">Пульт ведущего</h2><p>Введи общий код ведущих, чтобы менять цифры и стрелку на табло.</p><input id="adminPin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="32" aria-label="Код ведущих"><button id="adminLoginButton" type="button">Открыть пульт</button><p id="adminLoginFeedback" role="status" aria-live="polite"></p></div></div>
+
+  <div class="admin-login-overlay" id="adminLoginOverlay" role="dialog" aria-modal="true" aria-labelledby="adminLoginTitle">
+    <form class="admin-login-card" id="adminLoginForm">
+      <span class="brand-mark big" aria-hidden="true">ЛД</span>
+      <h2 id="adminLoginTitle">Пульт ведущего</h2>
+      <p>Введи общий код ведущих, чтобы управлять табло.</p>
+      <input id="adminPin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="32" aria-label="Код ведущих">
+      <button class="btn btn-gold" id="adminLoginButton" type="submit">Открыть пульт</button>
+      <p id="adminLoginFeedback" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+
   <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="prizeTitle">
-    <div class="card"><button class="close" id="close" aria-label="Закрыть">×</button><div class="spark">✦</div><h2 id="prizeTitle">Твой подарок!</h2><img class="ticket-art" id="ticketArt" src="gift-ticket-show.webp" alt="Подарочный билет на шоу «Личное дело»"><p id="prizeText"></p><div class="links" id="links"></div><div class="small">Сохрани контакты или открой ссылку, чтобы забрать подарок.</div></div>
+    <div class="card">
+      <button class="close" id="close" type="button" aria-label="Закрыть">×</button>
+      <div class="spark" aria-hidden="true">✦</div>
+      <p class="card-kicker">Твой подарок</p>
+      <h2 id="prizeTitle"></h2>
+      <img class="ticket-art" id="ticketArt" src="img/gift-ticket-show.webp" alt="Подарочный билет на шоу «Личное дело»" loading="lazy">
+      <p id="prizeText"></p>
+      <div class="links" id="links"></div>
+      <p class="small">Открой ссылку сейчас или сохрани контакт, чтобы забрать подарок.</p>
+    </div>
   </div>
+
   <div class="modal" id="ownModal" role="dialog" aria-modal="true" aria-labelledby="ownTitle">
-    <div class="card own-card"><button class="close" id="closeOwn" aria-label="Закрыть">×</button><h2 id="ownTitle">Твой вариант</h2><p>Напиши, что тебе ближе: во что ты больше веришь?</p><textarea id="ownText" maxlength="180" placeholder="Например: астрология" aria-label="Что тебе ближе"></textarea><div class="own-actions"><button class="claim" id="submitOwn">Отправить вариант</button><button class="claim alt" id="cancelOwn">Отмена</button></div></div>
+    <form class="card own-card" id="ownForm">
+      <button class="close" id="closeOwn" type="button" aria-label="Закрыть">×</button>
+      <h2 id="ownTitle">Твой вариант</h2>
+      <p>Во что ты веришь больше? Напиши коротко — ведущие увидят ответ.</p>
+      <textarea id="ownText" maxlength="180" rows="3" placeholder="Например: астрология" aria-label="Твой вариант"></textarea>
+      <p class="own-counter"><span id="ownCount">0</span>/180</p>
+      <div class="own-actions">
+        <button class="btn btn-gold" id="submitOwn" type="submit">Отправить вариант</button>
+        <button class="btn btn-light" id="cancelOwn" type="button">Отмена</button>
+      </div>
+    </form>
   </div>
-  <script>
-    const defaultPrizes = [
-      {name:'Калькулятор времени',qty:'без ограничений',links:[['Забрать подарок','https://t.me/zarumnaya_time_gift_bot']]},
-      {name:'Платформа мини-продуктов',qty:'без ограничений',links:[['Забрать подарок','https://t.me/zarumnaya_product_bot']]},
-      {name:'Месяц участия в Нашем клубе',qty:'3 приза',links:[['Забрать подарок','https://t.me/+79381027053']]},
-      {name:'Диагностика',qty:'3 приза',links:[['Записаться','https://t.me/+79381027053']]},
-      {name:'Бизнес-консультация от Светланы Логуновой',qty:'1 приз',links:[['Написать Светлане','https://t.me/LanaLoguna']]},
-      {name:'Консультация бизнес-наставника Светланы Логуновой',qty:'1 приз',links:[['Написать Светлане','https://t.me/LanaLoguna']]},
-      {id:'show-ticket',name:'Билет на следующее шоу «Личное дело»',qty:'15 призов',links:[['Забрать билет','https://t.me/+79381027053']]},
-      {name:'Персональный нумерологический квест по дате рождения',qty:'без ограничений',links:[['Открыть в MAX','https://max.ru/id645328396107_1_bot'],['Открыть в Telegram','https://t.me/Tregub_kvest_bot']]},
-      {id:'phoenix-month',name:'Месяц участия в трансформационном клубе «Феникс»',qty:'2 шт',links:[['Написать в MAX','https://max.ru/u/f9LHodD0cOL1yqik7lLHO2puLqmokvARFHNdX8Uuk3dDSvxUzfpw0w-cvYQ'],['Написать в Telegram','https://t.me/Tatyana_Tregub']]},
-      {name:'Скидка 10% на создание сайта',qty:'1 приз',links:[['Написать в MAX','https://max.ru/u/f9LHodD0cOL44FsDohSNLf8faLGo3MRFcC8Auq_8g9J4QUCj7GPTnQOt2zI'],['Написать в Telegram','https://t.me/+79381027053']]},
-      {name:'Скидка 15% на создание личного ИИ-агента',qty:'1 приз',links:[['Написать в MAX','https://max.ru/u/f9LHodD0cOL44FsDohSNLf8faLGo3MRFcC8Auq_8g9J4QUCj7GPTnQOt2zI'],['Написать в Telegram','https://t.me/+79381027053']]}
-    ];
-    const q=new URLSearchParams(location.search);if(q.has('admin'))document.body.classList.add('page-admin');if(q.has('screen'))document.body.classList.add('page-screen');
-    const VOTES_API='https://lichnoe-delo-votes.halewren69.chatgpt.site';
-    const wheel=document.querySelector('#wheel'),spin=document.querySelector('#spin'),hint=document.querySelector('#hint'),modal=document.querySelector('#modal');
-    const prizesKey='gift-wheel-prizes-v3',votesKey='gift-wheel-votes-v2',displayOverrideKey='gift-wheel-display-override-v1',gaugeOverrideKey='gift-wheel-gauge-override-v1',expectedVotesKey='gift-wheel-expected-votes-v1',legacyGaugeStepsKey='gift-wheel-gauge-steps-v1',voteKey='gift-wheel-my-vote-v2',playedKey='gift-wheel-played-v1',winsKey='gift-wheel-wins-v1',ownEntriesKey='gift-wheel-own-entries-v1',voterIdKey='gift-wheel-voter-id-v1',totalWinsKey='gift-wheel-total-wins-v1',adminTokenKey='lichnoe-delo-admin-session-v1',totalGiftsLimit=50;
-    const savedPrizes=localStorage.getItem(prizesKey),legacyPrizes=localStorage.getItem('gift-wheel-prizes-v2');let adminToken=sessionStorage.getItem(adminTokenKey)||'';
-    let prizes=JSON.parse(savedPrizes||legacyPrizes||'null')||defaultPrizes;
-    if(!savedPrizes){if(legacyPrizes){prizes=prizes.map(p=>{const name=(p.name||'').toLowerCase();if(name.includes('ты можешь больше'))return{...p,name:'Персональный нумерологический квест по дате рождения'};if(name.includes('феникс'))return{...p,id:'phoenix-month',name:'Месяц участия в трансформационном клубе «Феникс»',qty:'2 шт'};return p})}localStorage.setItem(prizesKey,JSON.stringify(prizes))}
-    let votes=JSON.parse(localStorage.getItem(votesKey)||'null')||{psychology:0,numerology:0,abstain:0};let displayOverride=JSON.parse(localStorage.getItem(displayOverrideKey)||'null');let gaugeOverride=localStorage.getItem(gaugeOverrideKey);let legacyGaugeSteps=Math.max(1,Math.min(500,parseInt(localStorage.getItem(legacyGaugeStepsKey)||'25',10)||25));let expectedVotes=Math.max(1,Math.min(10000,parseInt(localStorage.getItem(expectedVotesKey)||String(legacyGaugeSteps*2),10)||50));let gaugeStepsToEdge=Math.max(1,Math.ceil(expectedVotes/2));
-    let prizeWins=JSON.parse(localStorage.getItem(winsKey)||'{}')||{};let ticketWins=Number(prizeWins['show-ticket'])||0;let phoenixWins=Number(prizeWins['phoenix-month'])||0;let totalWins=Number(localStorage.getItem(totalWinsKey))||0;const ticketLimit=15,phoenixLimit=2;
-    const ticketPrize=prizes.find(p=>p.name&&p.name.toLowerCase().includes('билет')&&p.name.toLowerCase().includes('шоу'));if(ticketPrize&&!ticketPrize.id)ticketPrize.id='show-ticket';
-    let selected=localStorage.getItem(voteKey)||'';let played=localStorage.getItem(playedKey)==='yes';let voterId=localStorage.getItem(voterIdKey);if(!voterId){voterId=crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random();localStorage.setItem(voterIdKey,voterId)}let ownEntries=JSON.parse(localStorage.getItem(ownEntriesKey)||'[]')||[];let remoteConnected=false;let remoteSuggestions=[];if(selected==='Воздержусь'){selected='Свой вариант';localStorage.setItem(voteKey,selected)}
-    function adminFeedback(message){const status=document.querySelector('#adminActionFeedback');if(status)status.textContent=message}
-    function showAdminLogin(message=''){const overlay=document.querySelector('#adminLoginOverlay');if(!document.body.classList.contains('page-admin')||!overlay)return;overlay.classList.add('show');document.querySelector('#adminLoginFeedback').textContent=message;if(!document.querySelector('#adminPin').value)document.querySelector('#adminPin').focus()}
-    function hideAdminLogin(){document.querySelector('#adminLoginOverlay').classList.remove('show');document.querySelector('#adminLoginFeedback').textContent=''}
-    async function verifyAdminSession(){if(!document.body.classList.contains('page-admin'))return;if(!adminToken){showAdminLogin();return}try{const response=await fetch(VOTES_API+'/api/admin/session',{headers:{authorization:'Bearer '+adminToken},cache:'no-store'});if(!response.ok)throw new Error('session');hideAdminLogin()}catch{adminToken='';sessionStorage.removeItem(adminTokenKey);showAdminLogin('Сеанс закончился. Введи код ведущих ещё раз.')}}
-    async function loginAdmin(){const pin=document.querySelector('#adminPin').value;const button=document.querySelector('#adminLoginButton');const feedback=document.querySelector('#adminLoginFeedback');if(!pin){feedback.textContent='Введи код ведущих.';return}button.disabled=true;feedback.textContent='Проверяю код…';try{const response=await fetch(VOTES_API+'/api/admin/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({pin})});const data=await response.json();if(!response.ok){feedback.textContent=response.status===429?'Слишком много попыток. Подожди 15 минут и попробуй снова.':response.status===503?'Вход ведущего ещё не настроен.':'Код не подошёл. Проверь его и попробуй снова.';return}adminToken=data.token;sessionStorage.setItem(adminTokenKey,adminToken);document.querySelector('#adminPin').value='';hideAdminLogin();await loadRemoteState();adminFeedback('Пульт открыт. Изменения будут видны на общем табло.')}catch{feedback.textContent='Не удалось связаться с сервером. Проверь интернет и попробуй снова.'}finally{button.disabled=false}}
-    async function saveAdminControl(patch,successMessage='Изменения сохранены на общем табло.'){if(!adminToken){showAdminLogin('Введи код ведущих, чтобы изменить табло.');return false}try{const response=await fetch(VOTES_API+'/api/admin/control',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+adminToken},body:JSON.stringify(patch)});if(response.status===401){adminToken='';sessionStorage.removeItem(adminTokenKey);showAdminLogin('Сеанс закончился. Введи код ведущих ещё раз.');return false}if(!response.ok)throw new Error('save');await loadRemoteState();adminFeedback(successMessage);return true}catch{adminFeedback('Не удалось сохранить изменение. Проверь связь и повтори попытку.');return false}}
-    document.querySelector('#adminLoginButton').addEventListener('click',loginAdmin);
-    document.querySelector('#adminPin').addEventListener('keydown',event=>{if(event.key==='Enter')loginAdmin()});
-    function saveVotes(){localStorage.setItem(votesKey,JSON.stringify(votes));renderGauge()}
-    function renderGauge(){const realP=Number(votes.psychology)||0,realN=Number(votes.numerology)||0,realA=Number(votes.abstain)||0;document.querySelector('#realPsychCount').textContent=realP;document.querySelector('#realNumerCount').textContent=realN;document.querySelector('#realAbstainCount').textContent=realA;document.querySelector('#realTotalCount').textContent=realP+realN+realA;const shown=displayOverride||votes;const p=Number(shown.psychology)||0,n=Number(shown.numerology)||0,a=Number(shown.abstain)||0;const difference=n-p;const rawOffset=difference/(2*gaugeStepsToEdge);const visibleOffset=difference===0?0:Math.sign(difference)*Math.max(Math.abs(rawOffset),8/180);const ratio=gaugeOverride===null?Math.max(0,Math.min(1,.5+visibleOffset)):Math.max(0,Math.min(100,Number(gaugeOverride)))/100;document.querySelector('#psychCount').textContent=p;document.querySelector('#numerCount').textContent=n;document.querySelector('#abstainCount').textContent=a;document.querySelector('#totalCount').textContent=p+n+a;document.querySelector('#needle').style.transform='translateX(-50%) rotate('+(ratio*180-90)+'deg)';const setIfUnfocused=(selector,value)=>{const input=document.querySelector(selector);if(document.activeElement!==input)input.value=value};setIfUnfocused('#editPsych',p);setIfUnfocused('#editNumer',n);setIfUnfocused('#editAbstain',a);setIfUnfocused('#expectedVotes',expectedVotes);document.querySelector('#gaugeStepSummary').textContent='Шаг стрелки: 1/'+gaugeStepsToEdge+' от центра к краю';const slider=document.querySelector('#gaugeControl');const position=Math.round(ratio*100);if(document.activeElement!==slider)slider.value=position;document.querySelector('#gaugeControlValue').textContent=(100-position)+' / '+position}
-    function availablePrizes(){return totalWins>=totalGiftsLimit?[]:prizes.filter(p=>(p.id!=='show-ticket'||ticketWins<ticketLimit)&&(p.id!=='phoenix-month'||phoenixWins<phoenixLimit))}
-    function renderWheel(){const active=availablePrizes();wheel.replaceChildren();if(!active.length){wheel.style.background='conic-gradient(#26140d,#6d4527,#26140d)';return}const angle=360/active.length;const colors=['#d93f48','#fff','#191919','#fff','#2875db','#fff','#d93f48','#fff','#191919','#fff','#2875db'];const stops=active.map((_,i)=>`${colors[i%colors.length]} ${i*angle}deg ${(i+1)*angle}deg`).join(',');wheel.style.background=`conic-gradient(${stops})`;}
-    function renderTicketWins(){document.querySelector('#ticketWinCount').textContent=ticketWins;document.querySelector('#ticketWinProgress').style.width=`${Math.min(100,ticketWins/ticketLimit*100)}%`;document.querySelector('#totalGiftCount').textContent=totalWins;document.querySelector('#totalGiftProgress').style.width=`${Math.min(100,totalWins/totalGiftsLimit*100)}%`}
-    function sync(){spin.disabled=!selected||played||totalWins>=totalGiftsLimit;spin.textContent=totalWins>=totalGiftsLimit?'Все 50 подарков разыграны':played?'Попытка использована':selected?'Крути барабан':'Сначала сделай свой выбор';if(totalWins>=totalGiftsLimit)hint.textContent='Все 50 подарков уже разыграны.';else if(played)hint.textContent='Ты уже крутила колесо на этом устройстве.';document.querySelectorAll('.choice').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.choice===selected)))}
-    function saveOwnEntries(){localStorage.setItem(ownEntriesKey,JSON.stringify(ownEntries));renderOwnEntries()}
-    function renderOwnEntries(){const box=document.querySelector('#ownResponses');box.replaceChildren();const entries=remoteConnected?remoteSuggestions.map((text,index)=>({id:`remote-${index}`,text})):ownEntries;document.querySelector('#ownResponseCount').textContent=`(${entries.length})`;if(!entries.length){const empty=document.createElement('div');empty.className='own-empty';empty.textContent='Пока никто не предложил свой вариант.';box.append(empty);return}entries.forEach(entry=>{const item=document.createElement('div');item.className='own-response';item.textContent=entry.text;box.append(item)})}
-    async function loadRemoteState(){try{const response=await fetch(VOTES_API+'/api/state',{cache:'no-store'});if(!response.ok)throw new Error('state');const data=await response.json();const nextVotes={psychology:Number(data.votes?.psychology)||0,numerology:Number(data.votes?.numerology)||0,abstain:Number(data.votes?.custom)||0};remoteConnected=true;votes=nextVotes;const control=data.control||{};displayOverride=control.display&&typeof control.display==='object'?control.display:null;gaugeOverride=control.gaugeOverride==null?null:String(control.gaugeOverride);expectedVotes=Math.max(1,Math.min(10000,parseInt(control.expectedVotes||'50',10)||50));gaugeStepsToEdge=Math.max(1,Math.ceil(expectedVotes/2));const voteJson=JSON.stringify(votes);if(localStorage.getItem(votesKey)!==voteJson)localStorage.setItem(votesKey,voteJson);remoteSuggestions=Array.isArray(data.suggestions)?data.suggestions.filter(text=>typeof text==='string'):[];const suggestionsJson=JSON.stringify(remoteSuggestions.map((text,index)=>({id:'remote-'+index,text})));if(localStorage.getItem(ownEntriesKey)!==suggestionsJson)localStorage.setItem(ownEntriesKey,suggestionsJson);renderOwnEntries();renderGauge()}catch{remoteConnected=false;const status=document.querySelector('#adminActionFeedback');if(status&&document.body.classList.contains('page-admin'))status.textContent='Нет связи с общим голосованием. Проверь подключение к интернету.'}}
-    async function castVote(next,suggestion=''){const previous=selected;selected=next;gaugeOverride=null;localStorage.removeItem(gaugeOverrideKey);localStorage.setItem(voteKey,selected);sync();try{const choice=next==='Психология'?'psychology':next==='Нумерология'?'numerology':'custom';const response=await fetch(`${VOTES_API}/api/vote`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({voterId,choice,suggestion})});if(!response.ok)throw new Error('vote');await loadRemoteState();if(hint)hint.textContent='Твой выбор учтён.'}catch{selected=previous;localStorage.setItem(voteKey,selected);sync();if(hint)hint.textContent='Не удалось отправить выбор. Проверь интернет и попробуй ещё раз.'}}
-    function handleChoice(btn){if(btn.dataset.choice==='Свой вариант'){document.querySelector('#ownText').value=ownEntries.find(entry=>entry.id===voterId)?.text||'';document.querySelector('#ownModal').classList.add('show');document.querySelector('#ownText').focus();return}castVote(btn.dataset.choice)}
-    const recentTouchAt=new WeakMap();
-    function choiceFromEvent(event){const target=event.target;return target instanceof Element?target.closest('button.choice'):null}
-    function activateTouchChoice(btn){const now=performance.now();const previous=recentTouchAt.get(btn)||0;recentTouchAt.set(btn,now);if(previous>0&&now-previous<100)return;handleChoice(btn)}
-    document.addEventListener('pointerup',event=>{const btn=choiceFromEvent(event);if(!btn||event.pointerType!=='touch')return;activateTouchChoice(btn)},{capture:true,passive:true});
-    document.addEventListener('touchend',event=>{const btn=choiceFromEvent(event);if(btn)activateTouchChoice(btn)},{capture:true,passive:true});
-    document.addEventListener('click',event=>{const btn=choiceFromEvent(event);if(!btn)return;const lastTouch=recentTouchAt.get(btn)||0;if(lastTouch>0&&performance.now()-lastTouch<1000){event.preventDefault();event.stopImmediatePropagation();recentTouchAt.delete(btn);return}handleChoice(btn)},true);
-    document.querySelector('#submitOwn').addEventListener('click',async()=>{const text=document.querySelector('#ownText').value.trim();if(!text){document.querySelector('#ownText').focus();return}await castVote('Свой вариант',text);if(selected==='Свой вариант')document.querySelector('#ownModal').classList.remove('show')});
-    function closeOwn(){document.querySelector('#ownModal').classList.remove('show')}document.querySelector('#closeOwn').addEventListener('click',closeOwn);document.querySelector('#cancelOwn').addEventListener('click',closeOwn);document.querySelector('#ownModal').addEventListener('click',e=>{if(e.target.id==='ownModal')closeOwn()});
-    spin.addEventListener('click',()=>{if(!selected||played)return;const active=availablePrizes();if(!active.length)return;played=true;localStorage.setItem(playedKey,'yes');sync();spin.textContent='Колесо крутится…';const index=Math.floor(Math.random()*active.length);const segment=360/active.length;const final=((360-(index*segment+segment/2))%360+360)%360;wheel.style.transform=`rotate(${360*6+final}deg)`;setTimeout(()=>showPrize(active[index]),5100)});
-    function showPrize(prize){totalWins=Math.min(totalGiftsLimit,totalWins+1);localStorage.setItem(totalWinsKey,String(totalWins));if(prize.id==='show-ticket'&&ticketWins<ticketLimit){ticketWins++;prizeWins['show-ticket']=ticketWins}if(prize.id==='phoenix-month'&&phoenixWins<phoenixLimit){phoenixWins++;prizeWins['phoenix-month']=phoenixWins}if(prize.id==='show-ticket'||prize.id==='phoenix-month')localStorage.setItem(winsKey,JSON.stringify(prizeWins));renderTicketWins();renderWheel();sync();const isTicket=prize.id==='show-ticket';document.querySelector('#ticketArt').classList.toggle('show',isTicket);document.querySelector('#prizeTitle').textContent=prize.name;document.querySelector('#prizeText').textContent='Поздравляем! Это твой подарок.';const links=document.querySelector('#links');links.replaceChildren();prize.links.forEach(([label,url],i)=>{const a=document.createElement('a');a.className='claim'+(i?' alt':'');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=label;links.append(a)});modal.classList.add('show');document.querySelector('#close').focus()}
-    function drawPrizeRows(){const list=document.querySelector('#prizeList');list.replaceChildren();prizes.forEach((p,i)=>{const row=document.createElement('div');row.className='prize-row';row.dataset.prizeId=p.id||'';const primary=p.links[0]||['Забрать подарок',''];const secondary=p.links[1]||['',''];row.innerHTML=`<label>Название<input data-field="name" value=""></label><label>Количество / лимит<input data-field="qty" value=""></label><label>Кнопка / ссылка<input data-field="link1" value=""></label><label>Вторая кнопка / ссылка<input data-field="link2" value=""></label><button type="button" class="danger">Удалить</button>`;row.querySelector('[data-field=name]').value=p.name;row.querySelector('[data-field=qty]').value=p.qty;row.querySelector('[data-field=link1]').value=primary[1];row.querySelector('[data-field=link2]').value=secondary[1];row.querySelector('.danger').onclick=()=>{prizes.splice(i,1);drawPrizeRows()};list.append(row)})}
-    function collectPrizes(){prizes=[...document.querySelectorAll('.prize-row')].map(row=>{const val=f=>row.querySelector(`[data-field=${f}]`).value.trim();const a=val('link1'),b=val('link2');return{id:row.dataset.prizeId||`gift-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,name:val('name')||'Новый подарок',qty:val('qty')||'не указано',links:[[a?'Забрать подарок':'Уточнить подарок',a],...(b?[["Открыть ссылку",b]]:[])]}});localStorage.setItem(prizesKey,JSON.stringify(prizes));drawPrizeRows();renderWheel();adminFeedback('Подарки и количество сохранены в этом браузере. Соседние вкладки обновлены.')}
-    document.querySelector('#addPrize').onclick=()=>{prizes.push({id:`gift-${Date.now()}`,name:'Новый подарок',qty:'без ограничений',links:[['Забрать подарок','']]});drawPrizeRows()};document.querySelector('#savePrizes').onclick=collectPrizes;
-    let gaugeSaveTimer;document.querySelector('#gaugeControl').addEventListener('input',e=>{gaugeOverride=String(e.target.value);renderGauge();clearTimeout(gaugeSaveTimer);gaugeSaveTimer=setTimeout(()=>saveAdminControl({gaugeOverride:Number(gaugeOverride)},'Стрелка обновлена на общем табло.'),250)});document.querySelector('#saveExpectedVotes').onclick=()=>{expectedVotes=Math.max(1,Math.min(10000,parseInt(document.querySelector('#expectedVotes').value,10)||50));gaugeStepsToEdge=Math.max(1,Math.ceil(expectedVotes/2));renderGauge();saveAdminControl({expectedVotes},'Количество голосов сохранено на сервере.')};document.querySelector('#followVotes').onclick=()=>{displayOverride=null;gaugeOverride=null;renderGauge();saveAdminControl({display:null,gaugeOverride:null},'Табло снова показывает реальные голоса участников.')};document.querySelector('#resetAttempts').onclick=()=>{localStorage.removeItem(playedKey);played=false;sync();hint.textContent='Повторная попытка разрешена в этом браузере.'};document.querySelector('#saveVotes').onclick=()=>{displayOverride={psychology:Math.max(0,parseInt(document.querySelector('#editPsych').value,10)||0),numerology:Math.max(0,parseInt(document.querySelector('#editNumer').value,10)||0),abstain:Math.max(0,parseInt(document.querySelector('#editAbstain').value,10)||0)};gaugeOverride=null;renderGauge();saveAdminControl({display:displayOverride,gaugeOverride:null},'Цифры показаны на общем табло. Голоса участников не менялись.')};document.querySelector('#resetVotes').onclick=async()=>{if(!adminToken){showAdminLogin('Введи код ведущих, чтобы удалить голоса.');return}if(!confirm('Удалить все голоса зрителей? Это очистит общий результат для репетиции.'))return;const button=document.querySelector('#resetVotes');button.disabled=true;adminFeedback('Удаляем голоса…');try{const response=await fetch(VOTES_API+'/api/admin/reset-votes',{method:'POST',headers:{authorization:'Bearer '+adminToken}});if(response.status===401){adminToken='';sessionStorage.removeItem(adminTokenKey);showAdminLogin('Сеанс закончился. Введи код ведущих ещё раз.');return}if(!response.ok)throw new Error('reset');displayOverride=null;gaugeOverride=null;await loadRemoteState();adminFeedback('Все голоса удалены. Новые голоса снова появятся на табло и в пульте.')}catch{adminFeedback('Не удалось удалить голоса. Проверь связь и попробуй ещё раз.')}finally{button.disabled=false}};document.querySelector('#resetAttempts').addEventListener('click',()=>adminFeedback('Право крутить возвращено в этом браузере.'));document.querySelector('#openScreen').addEventListener('click',()=>adminFeedback('Открываю табло в новой вкладке.'));
-    document.querySelector('#close').addEventListener('click',()=>modal.classList.remove('show'));modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show')});document.addEventListener('keydown',e=>{if(e.key==='Escape'){modal.classList.remove('show');document.querySelector('#ownModal').classList.remove('show')}});window.addEventListener('storage',e=>{if(e.key===playedKey){played=e.newValue==='yes';sync()}if(e.key===voteKey){selected=e.newValue||'';sync()}if(e.key===ownEntriesKey){ownEntries=JSON.parse(e.newValue||'[]')||[];renderOwnEntries()}if(e.key===displayOverrideKey){displayOverride=JSON.parse(e.newValue||'null');renderGauge()}if(e.key===votesKey){votes=JSON.parse(e.newValue||'{}')||{psychology:0,numerology:0,abstain:0};gaugeOverride=null;localStorage.removeItem(gaugeOverrideKey);renderGauge()}if(e.key===gaugeOverrideKey){gaugeOverride=e.newValue;renderGauge()}if(e.key===expectedVotesKey){expectedVotes=Math.max(1,Math.min(10000,parseInt(e.newValue||'50',10)||50));gaugeStepsToEdge=Math.max(1,Math.ceil(expectedVotes/2));renderGauge()}if(e.key===prizesKey){prizes=JSON.parse(e.newValue||'null')||defaultPrizes;renderWheel();drawPrizeRows()}if(e.key===winsKey){prizeWins=JSON.parse(e.newValue||'{}')||{};ticketWins=Number(prizeWins['show-ticket'])||0;phoenixWins=Number(prizeWins['phoenix-month'])||0;renderTicketWins();renderWheel()}if(e.key===totalWinsKey){totalWins=Number(e.newValue)||0;renderTicketWins();renderWheel()}});renderTicketWins();renderGauge();renderWheel();drawPrizeRows();renderOwnEntries();sync();if(document.body.classList.contains('page-admin'))verifyAdminSession();loadRemoteState();setInterval(loadRemoteState,1500);
-  </script>
+
+  <script src="assets/vendor/qrcode.js?v=1" defer></script>
+  <script src="assets/app.js?v=1" defer></script>
 </body>
 </html>

@@ -1,0 +1,20 @@
+# Заголовок авторизации пульта: без этого PHP в режиме CGI его не видит.
+CGIPassAuth On
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP:Authorization} .
+  RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+
+# Служебные файлы недоступны из браузера.
+<FilesMatch "^(config(\.sample)?\.php|.*\.(lock|tmp))$">
+  Require all denied
+</FilesMatch>
+RedirectMatch 404 ^/api/data/
+
+# Состояние голосования всегда свежее.
+<Files "state.json">
+  <IfModule mod_headers.c>
+    Header set Cache-Control "no-store, max-age=0"
+  </IfModule>
+</Files>

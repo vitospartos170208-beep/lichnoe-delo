@@ -1,0 +1,4 @@
+api/config.php
+api/data/
+api/state.json
+node_modules/
