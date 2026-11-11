@@ -82,8 +82,49 @@
   let totalWins = Number(ls.get(KEY.totalWins)) || 0;
   let adminToken = ss.get(KEY.adminToken);
 
+  // ---------------------------------------------------------------- демо-режим
+  // На GitHub Pages нет PHP, поэтому там (и с ?demo) голоса живут в localStorage этого браузера.
+  // Логика повторяет api/index.php; вкладки сайта, табло и пульта в одном браузере видят одни голоса.
+  const DEMO = /\.github\.io$/.test(location.hostname) || new URLSearchParams(location.search).has('demo');
+  const DEMO_KEY = 'lichnoe-delo-demo-store-v1';
+  const demo = {
+    load() {
+      try { const s = JSON.parse(localStorage.getItem(DEMO_KEY)); if (s && s.votes) return s; } catch {}
+      return { rev: 0, votes: {}, control: { display: null, gaugeOverride: null, expectedVotes: 50 } };
+    },
+    save(s) { s.rev++; try { localStorage.setItem(DEMO_KEY, JSON.stringify(s)); } catch {} return demo.state(s); },
+    state(s = demo.load()) {
+      const counts = { psychology: 0, numerology: 0, custom: 0 }, suggestions = [];
+      Object.values(s.votes).sort((a, b) => a.t - b.t).forEach(v => { counts[v.c]++; if (v.c === 'custom' && v.s) suggestions.push(v.s); });
+      return { votes: counts, suggestions, control: s.control, rev: s.rev };
+    },
+    async call(action, body) {
+      await new Promise(r => setTimeout(r, 250 + Math.random() * 250)); // как сетевой запрос
+      const s = demo.load();
+      if (action === 'vote') {
+        s.votes[body.voterId] = { c: body.choice, s: String(body.suggestion || '').slice(0, 180), t: Date.now() };
+        s.control.gaugeOverride = null;
+        const d = s.control.display;
+        if (d && !(Number(d.psychology) + Number(d.numerology) + Number(d.abstain))) s.control.display = null;
+        return { ok: true, state: demo.save(s) };
+      }
+      if (action === 'login') {
+        if (!body.pin) { const e = new Error('wrong_pin'); e.status = 401; throw e; }
+        return { token: 'demo' };
+      }
+      if (action === 'session') return { ok: true };
+      if (action === 'control') {
+        ['display', 'gaugeOverride', 'expectedVotes'].forEach(k => { if (k in body) s.control[k] = body[k]; });
+        return { ok: true, state: demo.save(s) };
+      }
+      if (action === 'reset') { s.votes = {}; s.control.display = null; s.control.gaugeOverride = null; return { ok: true, state: demo.save(s) }; }
+      return {};
+    }
+  };
+
   // ---------------------------------------------------------------- сеть
   async function fetchState() {
+    if (DEMO) return demo.state();
     try {
       const r = await fetch(STATE_URL + '?t=' + Date.now(), { cache: 'no-store' });
       if (r.ok) return await r.json();
@@ -94,6 +135,7 @@
   }
 
   async function api(action, body, auth = false) {
+    if (DEMO) return demo.call(action, body || {});
     const headers = { 'content-type': 'application/json' };
     if (auth) { headers.authorization = 'Bearer ' + adminToken; headers['x-admin-token'] = adminToken; }
     const r = await fetch(API + '?a=' + action, { method: body === undefined ? 'GET' : 'POST', headers, body: body === undefined ? undefined : JSON.stringify(body), cache: 'no-store' });
@@ -676,6 +718,13 @@
   });
 
   // ---------------------------------------------------------------- старт
+  if (DEMO && MODE !== 'screen') {
+    const note = document.createElement('div');
+    note.className = 'demo-note';
+    note.textContent = 'Демо-версия: голоса сохраняются только в этом браузере. Откройте табло и пульт в соседних вкладках.';
+    document.body.append(note);
+    if (MODE === 'admin') { const p = $('#adminLoginOverlay p'); if (p) p.textContent = 'Демо-версия: подойдёт любой код.'; }
+  }
   renderTicketWins();
   renderGauge();
   renderWheel();
