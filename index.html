@@ -18,7 +18,7 @@
   <link rel="preload" href="img/reel-shade-0.png" as="image">
   <link rel="preload" href="img/reel-shade-1.png" as="image">
   <link rel="preload" href="img/reel-shade-2.png" as="image">
-  <link rel="stylesheet" href="assets/style.css?v=21">
+  <link rel="stylesheet" href="assets/style.css?v=24">
 </head>
 <body>
   <div class="backdrop" aria-hidden="true"></div>
@@ -42,11 +42,11 @@
         <button class="choice" type="button" data-choice="Нумерология" aria-pressed="false"><span class="choice-art art-numer" aria-hidden="true"></span><span class="choice-badge" aria-hidden="true"></span><span class="sr-only">Нумерология</span></button>
         <button class="choice" type="button" data-choice="Свой вариант" aria-pressed="false"><span class="choice-art art-own" aria-hidden="true"></span><span class="choice-badge" aria-hidden="true"></span><span class="sr-only">Свой вариант</span></button>
       </div>
-      <p class="vote-status" id="voteStatus" aria-live="polite">Нажми на карточку — голос сразу попадёт на табло.</p>
+      <p class="vote-status" id="voteStatus" aria-live="polite">Нажми на кнопку, следи за табло ниже или на экране.</p>
     </section>
 
     <section class="block board vote-board" aria-labelledby="boardTitle">
-      <h2 class="step-title" id="boardTitle"><span class="step-n">2</span><span class="board-title-text">Выбор всех зрителей</span></h2>
+      <h2 class="step-title" id="boardTitle"><span class="step-n">2</span><span class="board-title-text">Кто победит</span></h2>
       <div class="board-stage">
         <img class="woman brunette" src="img/brunette-vote.webp" alt="" width="445" height="711" loading="lazy">
         <div class="gauge-window">
@@ -88,6 +88,10 @@
       </div>
       <button class="spin" id="spin" type="button" disabled>Сначала проголосуй</button>
       <p class="hint" id="hint" aria-live="polite">Барабан откроется после голосования.</p>
+      <div class="prize-board" id="prizeBoardWrap">
+        <h3>Подарки на барабане</h3>
+        <ul id="prizeBoard"></ul>
+      </div>
     </section>
 
     <p class="footnote">Крутить барабан можно один раз с одного устройства.</p>
@@ -220,6 +224,6 @@
   </div>
 
   <script src="assets/vendor/qrcode.js?v=1" defer></script>
-  <script src="assets/app.js?v=10" defer></script>
+  <script src="assets/app.js?v=12" defer></script>
 </body>
 </html>

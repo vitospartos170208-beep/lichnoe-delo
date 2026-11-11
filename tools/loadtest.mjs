@@ -4,7 +4,8 @@
 //
 // Что делает:
 //   - каждый «зритель» опрашивает api/state.json раз в 2,5 с (как настоящий телефон);
-//   - за первые 2/3 времени каждый голосует один раз, четверть зрителей потом передумывает;
+//   - за первые 2/3 времени каждый голосует один раз, четверть зрителей пытается передумать —
+//     сервер должен отклонить смену выбора раньше 5 минут (ответ 409, это не ошибка);
 //   - в конце сверяет: голосов на сервере ровно столько, сколько зрителей (ни один не потерян, нет дублей);
 //   - с --pin удаляет все голоса после проверки (НЕ запускать во время шоу — сотрёт и настоящие голоса).
 // Нужен Node.js 18+.
@@ -12,7 +13,7 @@
 const args = process.argv.slice(2);
 const base = (args.find(a => !a.startsWith('--')) || '').replace(/\/?$/, '/');
 const opt = (name, d) => { const i = args.indexOf('--' + name); return i >= 0 ? args[i + 1] : d; };
-const VIEWERS = Number(opt('viewers', 200));
+const VIEWERS = Number(opt('viewers', 200)); // на шоу ожидается 100–200 человек одновременно
 const SECONDS = Number(opt('seconds', 45));
 const PIN = opt('pin', '');
 if (!/^https?:\/\//.test(base)) {
@@ -22,7 +23,7 @@ if (!/^https?:\/\//.test(base)) {
 
 const API = base + 'api/index.php';
 const choices = ['psychology', 'numerology', 'custom'];
-const stats = { poll: [], vote: [], pollErr: 0, voteErr: 0, errCodes: {} };
+const stats = { poll: [], vote: [], pollErr: 0, voteErr: 0, cooldown: 0, errCodes: {} };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const pct = (arr, p) => { if (!arr.length) return 0; const s = [...arr].sort((a, b) => a - b); return Math.round(s[Math.min(s.length - 1, Math.floor(s.length * p))]); };
 
@@ -30,6 +31,7 @@ async function timed(fn, bucket, errKey) {
   const t = performance.now();
   try {
     const r = await fn();
+    if (r.status === 409) { stats.cooldown++; return null; }
     if (!r.ok) { stats[errKey]++; stats.errCodes[r.status] = (stats.errCodes[r.status] || 0) + 1; return null; }
     stats[bucket].push(performance.now() - t);
     return r;
@@ -64,7 +66,7 @@ async function viewer(i, until) {
         method: 'POST', headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ voterId, choice, suggestion: choice === 'custom' ? 'Нагрузочный тест' : '' })
       }), 'vote', 'voteErr');
-      voted = ok ? (voted === 1 ? 2 : 3) : voted;
+      voted = ok ? (voted === 1 ? 2 : 3) : (voted === 2 ? 3 : voted);
     }
     await sleep(2500);
   }
@@ -89,6 +91,7 @@ console.log('\n\nРезультат');
 console.log(`  Опрос табло (state.json): ${stats.poll.length} запросов, ошибок ${stats.pollErr}, медиана ${pct(stats.poll, .5)} мс, 95% быстрее ${pct(stats.poll, .95)} мс`);
 console.log(`  Голоса:                   ${stats.vote.length} запросов, ошибок ${stats.voteErr}, медиана ${pct(stats.vote, .5)} мс, 95% быстрее ${pct(stats.vote, .95)} мс`);
 if (Object.keys(stats.errCodes).length) console.log('  Коды ошибок:', stats.errCodes);
+console.log(`  Смен выбора отклонено паузой 5 минут: ${stats.cooldown}`);
 console.log(`  Проголосовало зрителей: ${votedViewers}, прибавилось голосов на сервере: ${added}`);
 const pass = added === votedViewers && stats.voteErr === 0 && pct(stats.vote, .95) < 2000;
 console.log(pass ? '\n  ✓ Всё в порядке: голоса не потерялись, сервер отвечает быстро.'

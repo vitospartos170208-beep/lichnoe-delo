@@ -7,11 +7,13 @@
   const STATE_URL = 'api/state.json';
   const POLL_MS = { viewer: 2500, screen: 1000, admin: 1500 };
   const VOTED_SHEET_MS = 5000;
+  const VOTE_COOLDOWN_MS = 5 * 60 * 1000; // сменить выбор можно через 5 минут (то же значение на сервере)
+  const DEFAULT_STATUS = 'Нажми на кнопку, следи за табло ниже или на экране.';
 
   const defaultPrizes = [
     {name:'Калькулятор времени',qty:'без ограничений',links:[['Забрать подарок','https://t.me/zarumnaya_time_gift_bot']]},
     {name:'Платформа мини-продуктов',qty:'без ограничений',links:[['Забрать подарок','https://t.me/zarumnaya_product_bot']]},
-    {name:'Месяц участия в Нашем клубе',qty:'3 приза',links:[['Забрать подарок','https://t.me/+79381027053']]},
+    {name:'Месяц участия в Нашем клубе',qty:'2 приза',links:[['Забрать подарок','https://t.me/+79381027053']]},
     {name:'Диагностика',qty:'3 приза',links:[['Записаться','https://t.me/+79381027053']]},
     {name:'Бизнес-консультация от Светланы Логуновой',qty:'1 приз',links:[['Написать Светлане','https://t.me/LanaLoguna']]},
     {name:'Консультация бизнес-наставника Светланы Логуновой',qty:'1 приз',links:[['Написать Светлане','https://t.me/LanaLoguna']]},
@@ -19,7 +21,8 @@
     {name:'Персональный нумерологический квест по дате рождения',qty:'без ограничений',links:[['Открыть в MAX','https://max.ru/id645328396107_1_bot'],['Открыть в Telegram','https://t.me/Tregub_kvest_bot']]},
     {id:'phoenix-month',name:'Месяц участия в трансформационном клубе «Феникс»',qty:'2 шт',links:[['Написать в MAX','https://max.ru/u/f9LHodD0cOL1yqik7lLHO2puLqmokvARFHNdX8Uuk3dDSvxUzfpw0w-cvYQ'],['Написать в Telegram','https://t.me/Tatyana_Tregub']]},
     {name:'Скидка 10% на создание сайта',qty:'1 приз',links:[['Написать в MAX','https://max.ru/u/f9LHodD0cOL44FsDohSNLf8faLGo3MRFcC8Auq_8g9J4QUCj7GPTnQOt2zI'],['Написать в Telegram','https://t.me/+79381027053']]},
-    {name:'Скидка 15% на создание личного ИИ-агента',qty:'1 приз',links:[['Написать в MAX','https://max.ru/u/f9LHodD0cOL44FsDohSNLf8faLGo3MRFcC8Auq_8g9J4QUCj7GPTnQOt2zI'],['Написать в Telegram','https://t.me/+79381027053']]}
+    {name:'Скидка 15% на создание личного ИИ-агента',qty:'1 приз',links:[['Написать в MAX','https://max.ru/u/f9LHodD0cOL44FsDohSNLf8faLGo3MRFcC8Auq_8g9J4QUCj7GPTnQOt2zI'],['Написать в Telegram','https://t.me/+79381027053']]},
+    {name:'Бесплатная консультация по созданию ИИ-агентов и сайтов',qty:'1 приз',links:[['Написать в MAX','https://max.ru/u/f9LHodD0cOL44FsDohSNLf8faLGo3MRFcC8Auq_8g9J4QUCj7GPTnQOt2zI'],['Написать в Telegram','https://t.me/+79381027053']]}
   ];
   const TICKET_LIMIT = 15, PHOENIX_LIMIT = 2, TOTAL_GIFTS_LIMIT = 50;
 
@@ -30,7 +33,8 @@
   };
 
   const KEY = {
-    prizes: 'gift-wheel-prizes-v3', myVote: 'gift-wheel-my-vote-v2', mySuggestion: 'lichnoe-delo-my-suggestion-v1',
+    prizes: 'gift-wheel-prizes-v4', myVote: 'gift-wheel-my-vote-v2', mySuggestion: 'lichnoe-delo-my-suggestion-v1',
+    myVoteAt: 'lichnoe-delo-my-vote-at-v1', myEpoch: 'lichnoe-delo-my-epoch-v1',
     played: 'gift-wheel-played-v1', wins: 'gift-wheel-wins-v1', totalWins: 'gift-wheel-total-wins-v1',
     voterId: 'gift-wheel-voter-id-v1', adminToken: 'lichnoe-delo-admin-session-v1'
   };
@@ -90,19 +94,24 @@
   const demo = {
     load() {
       try { const s = JSON.parse(localStorage.getItem(DEMO_KEY)); if (s && s.votes) return s; } catch {}
-      return { rev: 0, votes: {}, control: { display: null, gaugeOverride: null, expectedVotes: 50 } };
+      return { rev: 0, epoch: 0, votes: {}, control: { display: null, gaugeOverride: null, expectedVotes: 50 } };
     },
     save(s) { s.rev++; try { localStorage.setItem(DEMO_KEY, JSON.stringify(s)); } catch {} return demo.state(s); },
     state(s = demo.load()) {
       const counts = { psychology: 0, numerology: 0, custom: 0 }, suggestions = [];
       Object.values(s.votes).sort((a, b) => a.t - b.t).forEach(v => { counts[v.c]++; if (v.c === 'custom' && v.s) suggestions.push(v.s); });
-      return { votes: counts, suggestions, control: s.control, rev: s.rev };
+      return { votes: counts, suggestions, control: s.control, rev: s.rev, epoch: s.epoch || 0 };
     },
     async call(action, body) {
       await new Promise(r => setTimeout(r, 250 + Math.random() * 250)); // как сетевой запрос
       const s = demo.load();
       if (action === 'vote') {
-        s.votes[body.voterId] = { c: body.choice, s: String(body.suggestion || '').slice(0, 180), t: Date.now() };
+        const prev = s.votes[body.voterId], sug = String(body.suggestion || '').slice(0, 180);
+        if (prev && prev.c === body.choice && prev.s === sug) return { ok: true, state: demo.state(s) };
+        if (prev && Date.now() - prev.t < VOTE_COOLDOWN_MS) {
+          const e = new Error('cooldown'); e.status = 409; e.retryAfter = Math.ceil((prev.t + VOTE_COOLDOWN_MS - Date.now()) / 1000); throw e;
+        }
+        s.votes[body.voterId] = { c: body.choice, s: sug, t: Date.now() };
         s.control.gaugeOverride = null;
         const d = s.control.display;
         if (d && !(Number(d.psychology) + Number(d.numerology) + Number(d.abstain))) s.control.display = null;
@@ -117,7 +126,7 @@
         ['display', 'gaugeOverride', 'expectedVotes'].forEach(k => { if (k in body) s.control[k] = body[k]; });
         return { ok: true, state: demo.save(s) };
       }
-      if (action === 'reset') { s.votes = {}; s.control.display = null; s.control.gaugeOverride = null; return { ok: true, state: demo.save(s) }; }
+      if (action === 'reset') { s.votes = {}; s.epoch = (s.epoch || 0) + 1; s.control.display = null; s.control.gaugeOverride = null; return { ok: true, state: demo.save(s) }; }
       return {};
     }
   };
@@ -141,7 +150,7 @@
     const r = await fetch(API + '?a=' + action, { method: body === undefined ? 'GET' : 'POST', headers, body: body === undefined ? undefined : JSON.stringify(body), cache: 'no-store' });
     let data = {};
     try { data = await r.json(); } catch {}
-    if (!r.ok) { const e = new Error(data.error || 'http ' + r.status); e.status = r.status; throw e; }
+    if (!r.ok) { const e = new Error(data.error || 'http ' + r.status); e.status = r.status; e.retryAfter = Number(data.retryAfter) || 0; throw e; }
     return data;
   }
 
@@ -156,6 +165,17 @@
     gaugeOverride = c.gaugeOverride == null ? null : Number(c.gaugeOverride);
     expectedVotes = clampInt(c.expectedVotes, 1, 10000, 50);
     suggestions = Array.isArray(data.suggestions) ? data.suggestions.filter(t => typeof t === 'string') : [];
+    if (MODE === 'viewer' && data.epoch != null) {
+      const mine = ls.get(KEY.myEpoch);
+      if (mine === null) ls.set(KEY.myEpoch, String(data.epoch));
+      else if (Number(mine) !== Number(data.epoch)) {
+        // ведущие удалили все голоса: прошлый выбор больше не учтён, голосовать можно сразу
+        ls.set(KEY.myEpoch, String(data.epoch));
+        ls.del(KEY.myVote); ls.del(KEY.myVoteAt); ls.del(KEY.mySuggestion);
+        selected = '';
+        renderChoices(); syncSpin();
+      }
+    }
     renderGauge();
     renderOwnEntries();
   }
@@ -221,19 +241,29 @@
   const voteStatus = $('#voteStatus');
   const btnFor = choice => $$('.choice').find(b => b.dataset.choice === choice);
 
+  const cooldownLeft = () => selected ? Math.max(0, (Number(ls.get(KEY.myVoteAt)) || 0) + VOTE_COOLDOWN_MS - Date.now()) : 0;
+  const fmtLeft = ms => { const t = Math.ceil(ms / 1000); return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'); };
+  let cooldownTimer = 0;
+  function tickCooldown() {
+    clearInterval(cooldownTimer);
+    if (cooldownLeft() > 0) cooldownTimer = setInterval(() => { renderChoices(); if (!cooldownLeft()) clearInterval(cooldownTimer); }, 1000);
+  }
+
   function renderChoices() {
     $$('.choice').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.choice === selected)));
     choicesBox.classList.toggle('has-vote', !!selected);
-    if (!voteStatus || voting) return;
+    choicesBox.classList.toggle('locked', cooldownLeft() > 0);
+    if (!voteStatus || voting || showCooldown.t) return;
     voteStatus.className = 'vote-status';
     if (selected) {
       voteStatus.classList.add('ok');
       voteStatus.innerHTML = '';
       voteStatus.append('✓ Твой голос — ');
       const b = document.createElement('b'); b.textContent = CHOICES[selected].phrase; voteStatus.append(b);
-      voteStatus.append('. Передумала — нажми другую карточку.');
+      const left = cooldownLeft();
+      voteStatus.append(left > 0 ? '. Сменить выбор можно через ' + fmtLeft(left) + '.' : '. Передумала — нажми другую карточку.');
     } else {
-      voteStatus.textContent = 'Нажми на карточку — голос сразу попадёт на табло.';
+      voteStatus.textContent = DEFAULT_STATUS;
     }
   }
 
@@ -251,14 +281,18 @@
         api('vote', { voterId, choice: CHOICES[choice].api, suggestion }),
         spinReel(btn, { loops: 2, duration: 900 })
       ]);
+      const changed = selected !== choice || (choice === 'Свой вариант' && ls.get(KEY.mySuggestion, '') !== suggestion);
       selected = choice;
       ls.set(KEY.myVote, choice);
+      if (changed) ls.set(KEY.myVoteAt, String(Date.now()));
+      if (data.state && data.state.epoch != null) ls.set(KEY.myEpoch, String(data.state.epoch));
       if (choice === 'Свой вариант') ls.set(KEY.mySuggestion, suggestion);
       applyState(data.state, true);
       setConnected(true);
       voting = false;
       btn.classList.remove('is-sending');
       renderChoices();
+      tickCooldown();
       btn.classList.remove('just-voted'); void btn.offsetWidth; btn.classList.add('just-voted');
       haptic([20, 40, 60]);
       celebrate(btn);
@@ -271,6 +305,14 @@
       renderChoices();
       btn.classList.remove('is-error'); void btn.offsetWidth; btn.classList.add('is-error');
       haptic([70, 50, 70]);
+      if (e.status === 409) {
+        // сервер помнит прошлый голос (например, данные браузера очищены) — подстраиваем таймер под него
+        if (!selected) { selected = choice; ls.set(KEY.myVote, choice); }
+        ls.set(KEY.myVoteAt, String(Date.now() - VOTE_COOLDOWN_MS + (e.retryAfter || 0) * 1000));
+        tickCooldown();
+        showCooldown(btn);
+        return false;
+      }
       voteStatus.className = 'vote-status err';
       voteStatus.textContent = e.status === 429
         ? 'Сервер перегружен. Подожди пару секунд и нажми ещё раз.'
@@ -279,9 +321,23 @@
     }
   }
 
+  function showCooldown(btn) {
+    if (btn) { btn.classList.remove('is-error'); void btn.offsetWidth; btn.classList.add('is-error'); }
+    haptic([40, 40, 40]);
+    clearTimeout(showCooldown.t);
+    showCooldown.t = 0;
+    renderChoices();
+    voteStatus.className = 'vote-status err';
+    voteStatus.textContent = 'Сменить выбор можно через ' + fmtLeft(cooldownLeft()) + '. Твой голос уже учтён.';
+    showCooldown.t = setTimeout(() => { showCooldown.t = 0; renderChoices(); }, 2500);
+  }
+
   function handleChoice(btn, event) {
     const choice = btn.dataset.choice;
     ripple(btn, event);
+    if (voting) return;
+    // В течение 5 минут после голоса выбор не меняется (и текст своего варианта тоже)
+    if (cooldownLeft() > 0 && (choice !== selected || choice === 'Свой вариант')) { showCooldown(btn); return; }
     if (choice === 'Свой вариант') { openOwn(); return; }
     if (choice === selected && !voting) { haptic(15); showVoted(choice, '', true); return; }
     castVote(choice);
@@ -379,6 +435,7 @@
     $('#votedNote').textContent = choice === 'Свой вариант'
       ? 'Ведущие увидят твой вариант на пульте.'
       : 'Смотри на большой экран — стрелка уже сдвинулась.';
+    if (!already) $('#votedNote').textContent += ' Сменить выбор можно через 5 минут.';
     const next = $('#votedNext');
     const canSpin = !played && totalWins < TOTAL_GIFTS_LIMIT;
     next.textContent = canSpin ? 'Крутить барабан ↓' : 'Готово';
@@ -472,6 +529,11 @@
       }
     }
     wheel.replaceChildren(svg);
+    const board = $('#prizeBoard');
+    if (board) {
+      board.replaceChildren(...active.map(p => { const li = document.createElement('li'); li.textContent = p.name.replace(/(\S)-(\S)/g, '$1‑$2'); return li; }));
+      $('#prizeBoardWrap').hidden = !active.length;
+    }
   }
 
   function renderTicketWins() {
@@ -730,7 +792,7 @@
   renderWheel();
   renderChoices();
   syncSpin();
-  if (MODE === 'viewer') introReels();
+  if (MODE === 'viewer') { introReels(); tickCooldown(); }
   if (MODE === 'admin') { drawPrizeRows(); renderOwnEntries(); verifyAdminSession(); }
   poll();
 })();

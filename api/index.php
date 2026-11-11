@@ -17,6 +17,7 @@ const LOGIN_WINDOW = 15 * 60;         // окно подсчёта неудач�
 const LOGIN_MAX_FAILS = 8;            // попыток на окно с одного адреса
 const MAX_VOTERS = 20000;             // защита хранилища от раздувания
 const SUGGESTION_MAX = 180;
+const VOTE_COOLDOWN = 300;           // через сколько секунд можно сменить выбор (5 минут)
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, max-age=0');
@@ -53,7 +54,7 @@ try {
             respond(404, ['error' => 'unknown_action']);
     }
 } catch (HttpError $e) {
-    respond($e->status, ['error' => $e->getMessage()]);
+    respond($e->status, ['error' => $e->getMessage()] + $e->extra);
 } catch (Throwable $e) {
     error_log('lichnoe-delo api: ' . $e->getMessage());
     respond(500, ['error' => 'server_error']);
@@ -76,9 +77,23 @@ function vote(array $body): array
         $suggestion = cleanText((string)$body['suggestion'], SUGGESTION_MAX);
     }
 
-    return mutate(function (array &$store) use ($voterId, $choice, $suggestion) {
-        if (!isset($store['votes'][$voterId]) && count($store['votes']) >= MAX_VOTERS) {
+    $cooldown = (int)(loadConfig()['vote_cooldown'] ?? VOTE_COOLDOWN);
+
+    return mutate(function (array &$store) use ($voterId, $choice, $suggestion, $cooldown) {
+        $prev = $store['votes'][$voterId] ?? null;
+        if ($prev === null && count($store['votes']) >= MAX_VOTERS) {
             throw new HttpError(429, 'too_many_voters');
+        }
+        if ($prev !== null) {
+            $same = ($prev['c'] ?? '') === $choice && ($prev['s'] ?? '') === $suggestion;
+            if ($same) {
+                return; // повторное нажатие той же кнопки ничего не меняет и не продлевает паузу
+            }
+            // Сменить выбор можно не раньше чем через $cooldown секунд после прошлого голоса.
+            $left = (int)($prev['t'] ?? 0) + $cooldown - time();
+            if ($left > 0) {
+                throw new HttpError(409, 'cooldown', ['retryAfter' => $left]);
+            }
         }
         $store['votes'][$voterId] = ['c' => $choice, 's' => $suggestion, 't' => time()];
         // Живой голос возвращает стрелку к реальным цифрам.
@@ -122,6 +137,8 @@ function resetVotes(): array
 {
     return mutate(function (array &$store) {
         $store['votes'] = [];
+        // Новая «эпоха»: телефоны зрителей увидят сброс и разрешат голосовать заново без паузы.
+        $store['epoch'] = (int)($store['epoch'] ?? 0) + 1;
         $store['control']['display'] = null;
         $store['control']['gaugeOverride'] = null;
     });
@@ -229,6 +246,7 @@ function emptyStore(): array
     return [
         'secret' => bin2hex(random_bytes(32)),
         'rev' => 0,
+        'epoch' => 0,
         'votes' => [],
         'control' => ['display' => null, 'gaugeOverride' => null, 'expectedVotes' => 50],
         'fails' => [],
@@ -344,6 +362,7 @@ function publicState(array $store): array
         'suggestions' => $suggestions,
         'control' => $store['control'],
         'rev' => (int)$store['rev'],
+        'epoch' => (int)($store['epoch'] ?? 0),
         'updatedAt' => time(),
     ];
 }
@@ -353,11 +372,13 @@ function publicState(array $store): array
 final class HttpError extends Exception
 {
     public $status;
+    public $extra;
 
-    public function __construct(int $status, string $code)
+    public function __construct(int $status, string $code, array $extra = [])
     {
         parent::__construct($code);
         $this->status = $status;
+        $this->extra = $extra;
     }
 }
 

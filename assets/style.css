@@ -419,3 +419,24 @@ button{cursor:pointer}
 
 /* Пометка демо-версии (GitHub Pages): голоса в браузере, без сервера */
 .demo-note{position:fixed;z-index:50;left:50%;bottom:max(10px,env(safe-area-inset-bottom));transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px);padding:8px 14px;border-radius:999px;background:#2b1710e6;border:1px solid #e9b95c88;color:var(--gold-hi);font-size:12px;font-weight:700;text-align:center;box-shadow:0 6px 20px #0008;pointer-events:none}
+
+/* Список подарков под барабаном (без количества — участникам его не показывали и в исходной версии) */
+.prize-board{max-width:760px;margin:30px auto 0;padding:20px clamp(16px,3vw,26px) 22px;border-radius:18px;background:#1d0f0bcc;border:1px solid #e9b95c55;box-shadow:0 14px 40px #0008}
+.prize-board[hidden]{display:none}
+.prize-board h3{margin:0 0 12px;text-align:center;font:700 clamp(20px,4.4vw,26px)/1.2 var(--display);color:var(--gold-hi)}
+.prize-board ul{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:8px 18px;margin:0;padding:0;list-style:none}
+.prize-board li{position:relative;padding:8px 0 8px 26px;border-bottom:1px solid #e9b95c22;color:var(--cream);font-size:15px;line-height:1.35}
+.prize-board li::before{content:"✦";position:absolute;left:2px;top:8px;color:var(--gold)}
+.page-screen .prize-board,.page-admin .prize-board{display:none}
+/* Во время паузы после голоса остальные кнопки «заблокированы» */
+.choices.locked .choice[aria-pressed=false]{cursor:not-allowed}
+
+/* Табло на любом экране (16:9 … 4:3 … квадрат … 21:9): тумблер всегда целиком и максимально крупно,
+   а свободное место заполняет та же сцена — размытая и затемнённая, без чёрных полос.
+   Края картинки плавно растворяются в этот фон, шва не видно. */
+.page-screen .board-stage{position:relative;overflow:hidden}
+.page-screen .board-stage::before{content:"";position:absolute;inset:-60px;z-index:0;background:url(../img/detective-indicator-clean.webp) center/cover no-repeat;filter:blur(34px) brightness(.5) saturate(1.15);pointer-events:none}
+.page-screen .gauge-window{position:relative;z-index:1}
+/* растворение краёв — только там, где вокруг картинки есть свободное место */
+@media (max-aspect-ratio:174/100){.page-screen .gauge-window{-webkit-mask:linear-gradient(180deg,transparent 0,#000 9%,#000 91%,transparent 100%);mask:linear-gradient(180deg,transparent 0,#000 9%,#000 91%,transparent 100%)}}
+@media (min-aspect-ratio:182/100){.page-screen .gauge-window{-webkit-mask:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);mask:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%)}}
