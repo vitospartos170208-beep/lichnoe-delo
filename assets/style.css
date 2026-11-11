@@ -114,16 +114,22 @@ button{cursor:pointer}
 .choice.is-error{animation:shake .45s}
 @keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
 
-/* Волна от касания */
-/* Барабан игрового автомата: рамка карточки неподвижна, в окне прокручивается лента символов */
-.reel{--rt:.085;--rx:.065;position:absolute;z-index:1;top:calc(var(--rt)*100%);bottom:calc(var(--rt)*100%);left:calc(var(--rx)*100%);right:calc(var(--rx)*100%);overflow:hidden;border-radius:9%/7%;pointer-events:none;background:#f3e1c0}
-.reel::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#2a120699 0%,transparent 24%,transparent 76%,#2a120699 100%);pointer-events:none}
+/* Барабан игрового автомата: рамка карточки неподвижна, в окне едет лента чистых панелей (img/reel-strip.webp).
+   Окно совпадает с панелью своей карточки — отступы те же, что при нарезке ленты. */
+.reel{position:absolute;z-index:1;isolation:isolate;top:10.5%;bottom:7%;left:var(--rl);right:var(--rr);overflow:hidden;border-radius:12%/14%;pointer-events:none;background:#f6e4c2}
+/* Неподвижная тень цилиндра поверх ленты: карта затенения своей карточки (img/reel-shade-N.png) */
+.reel::after{content:"";position:absolute;inset:0;z-index:1;background:url(../img/reel-shade-0.png) 0 0/100% 100% no-repeat;mix-blend-mode:multiply}
+.choice:nth-child(1) .reel{--rl:9%;--rr:11%}
+.choice:nth-child(2) .reel{--rl:9.5%;--rr:6.5%}
+.choice:nth-child(2) .reel::after{background-image:url(../img/reel-shade-1.png)}
+.choice:nth-child(3) .reel{--rl:14%;--rr:6.5%}
+.choice:nth-child(3) .reel::after{background-image:url(../img/reel-shade-2.png)}
 .reel-strip{position:absolute;left:0;top:0;width:100%;display:flex;flex-direction:column;will-change:transform}
-.reel-item{position:relative;flex:1 1 0;overflow:hidden}
-.reel-face{position:absolute;background-image:url(../img/neon-wheel-buttons.webp);background-repeat:no-repeat;background-size:450% auto;
-  width:calc(100% / (1 - 2 * var(--rx)));height:calc(100% / (1 - 2 * var(--rt)));
-  left:calc(-100% * var(--rx) / (1 - 2 * var(--rx)));top:calc(-100% * var(--rt) / (1 - 2 * var(--rt)))}
+.reel-item{flex:1 1 0;background:url(../img/reel-strip.webp) no-repeat 0 0/100% 300%}
+.reel-item.sym-1{background-position:0 50%}
+.reel-item.sym-2{background-position:0 100%}
 
+/* Волна от касания */
 .ripple{position:absolute;z-index:2;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#fff4cf;pointer-events:none;opacity:.7;animation:ripple .6s ease-out forwards}
 @keyframes ripple{to{transform:scale(18);opacity:0}}
 

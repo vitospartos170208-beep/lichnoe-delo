@@ -248,8 +248,8 @@
   $$('.choice').forEach(btn => btn.addEventListener('click', e => handleChoice(btn, e)));
 
   // Барабан игрового автомата: лента символов прокручивается в окне карточки и встаёт на свой символ
-  // Выключено до доработки: в окне барабана видны края соседних кусков картинки.
-  const REELS_ENABLED = false;
+  // Лента — img/reel-strip.webp: три чистые панели в порядке SYMBOLS.
+  const REELS_ENABLED = true;
   const SYMBOLS = ['art-psych', 'art-numer', 'art-own'];
   function spinReel(btn, { loops = 3, duration = 1400, delay = 0 } = {}) {
     if (!REELS_ENABLED || reduceMotion || !btn.animate) return Promise.resolve();
@@ -264,10 +264,7 @@
     strip.style.height = total * 100 + '%';
     for (let i = 0; i < total; i++) {
       const item = document.createElement('span');
-      item.className = 'reel-item';
-      const face = document.createElement('span');
-      face.className = 'reel-face ' + SYMBOLS[(start + i) % 3];
-      item.append(face);
+      item.className = 'reel-item sym-' + ((start + i) % 3);
       strip.append(item);
     }
     win.append(strip);
@@ -280,7 +277,11 @@
       { offset: .84, transform: `translateY(${step * .12}%)`, filter: 'blur(0px)', easing: 'cubic-bezier(.3,0,.4,1)' },
       { transform: 'translateY(0%)', filter: 'blur(0px)' }
     ], { duration, delay, fill: 'both' });
-    return anim.finished.catch(() => {}).then(() => win.remove());
+    // Барабан встал ровно на место карточки — окно растворяется в неё, сглаживая разницу в оттенке
+    return anim.finished
+      .then(() => win.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 160, easing: 'ease-out', fill: 'forwards' }).finished)
+      .catch(() => {})
+      .then(() => win.remove());
   }
   // Заставка: три барабана останавливаются по очереди, слева направо
   function introReels() {
