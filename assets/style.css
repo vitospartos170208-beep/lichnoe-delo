@@ -278,6 +278,22 @@ button{cursor:pointer}
   .wheel-shell{margin-top:-34%}
 }
 
+/* Блоки 1 и 2 на странице зрителя — на 15% крупнее остальных */
+.page-viewer .vote .step-title,.page-viewer .board .step-title{font-size:clamp(26px,6vw,39px)}
+.page-viewer .choices{max-width:828px;gap:clamp(9px,2.8vw,21px)}
+.page-viewer .choice-badge{width:37px;height:37px;background-size:21px}
+.page-viewer .vote-status{max-width:644px;font-size:17px}
+.page-viewer .gauge-window{max-width:874px}
+.page-viewer .board-legend{max-width:874px;font-size:15px}
+.page-viewer .legend-side img{width:39px;height:39px}
+.page-viewer .legend-hint{font-size:13px}
+@media (min-width:900px){
+  .page-viewer .board-stage{grid-template-columns:1fr minmax(0,828px) 1fr}
+  .page-viewer .woman{max-width:265px}
+  .page-viewer .board-legend{max-width:828px}
+}
+@media (max-width:420px){.page-viewer .board-legend{font-size:12px}}
+
 /* ------------------------------------------------------------ Табло на экране (?screen=1) */
 .screen-close{display:none}
 .page-screen{overflow:hidden;cursor:none}

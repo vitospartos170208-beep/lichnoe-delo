@@ -203,7 +203,7 @@
     voteStatus.className = 'vote-status';
     voteStatus.textContent = 'Отправляем голос…';
     // Щелчки «трещотки», замедляющиеся к остановке барабана (только Android)
-    haptic([6, 70, 6, 80, 6, 100, 6, 130, 8, 170]);
+    haptic(REELS_ENABLED ? [6, 70, 6, 80, 6, 100, 6, 130, 8, 170] : 12);
     try {
       const [data] = await Promise.all([
         api('vote', { voterId, choice: CHOICES[choice].api, suggestion }),
@@ -248,9 +248,11 @@
   $$('.choice').forEach(btn => btn.addEventListener('click', e => handleChoice(btn, e)));
 
   // Барабан игрового автомата: лента символов прокручивается в окне карточки и встаёт на свой символ
+  // Выключено до доработки: в окне барабана видны края соседних кусков картинки.
+  const REELS_ENABLED = false;
   const SYMBOLS = ['art-psych', 'art-numer', 'art-own'];
   function spinReel(btn, { loops = 3, duration = 1400, delay = 0 } = {}) {
-    if (reduceMotion || !btn.animate) return Promise.resolve();
+    if (!REELS_ENABLED || reduceMotion || !btn.animate) return Promise.resolve();
     const own = SYMBOLS.find(c => btn.querySelector('.choice-art').classList.contains(c));
     const start = SYMBOLS.indexOf(own);
     btn.querySelectorAll('.reel').forEach(r => r.remove());
