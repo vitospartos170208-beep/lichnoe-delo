@@ -202,9 +202,13 @@
     btn.classList.add('is-sending');
     voteStatus.className = 'vote-status';
     voteStatus.textContent = 'Отправляем голос…';
-    haptic(12);
+    // Щелчки «трещотки», замедляющиеся к остановке барабана (только Android)
+    haptic([6, 70, 6, 80, 6, 100, 6, 130, 8, 170]);
     try {
-      const data = await api('vote', { voterId, choice: CHOICES[choice].api, suggestion });
+      const [data] = await Promise.all([
+        api('vote', { voterId, choice: CHOICES[choice].api, suggestion }),
+        spinReel(btn, { loops: 2, duration: 900 })
+      ]);
       selected = choice;
       ls.set(KEY.myVote, choice);
       if (choice === 'Свой вариант') ls.set(KEY.mySuggestion, suggestion);
@@ -242,6 +246,44 @@
   }
 
   $$('.choice').forEach(btn => btn.addEventListener('click', e => handleChoice(btn, e)));
+
+  // Барабан игрового автомата: лента символов прокручивается в окне карточки и встаёт на свой символ
+  const SYMBOLS = ['art-psych', 'art-numer', 'art-own'];
+  function spinReel(btn, { loops = 3, duration = 1400, delay = 0 } = {}) {
+    if (reduceMotion || !btn.animate) return Promise.resolve();
+    const own = SYMBOLS.find(c => btn.querySelector('.choice-art').classList.contains(c));
+    const start = SYMBOLS.indexOf(own);
+    btn.querySelectorAll('.reel').forEach(r => r.remove());
+    const win = document.createElement('span');
+    win.className = 'reel';
+    const strip = document.createElement('span');
+    strip.className = 'reel-strip';
+    const total = loops * 3 + 1;
+    strip.style.height = total * 100 + '%';
+    for (let i = 0; i < total; i++) {
+      const item = document.createElement('span');
+      item.className = 'reel-item';
+      const face = document.createElement('span');
+      face.className = 'reel-face ' + SYMBOLS[(start + i) % 3];
+      item.append(face);
+      strip.append(item);
+    }
+    win.append(strip);
+    btn.append(win);
+    const step = 100 / total;
+    // Лента едет вниз, на последних процентах проскакивает и возвращается — как механический барабан
+    const anim = strip.animate([
+      { transform: `translateY(${-(total - 1) * step}%)`, filter: 'blur(0px)', easing: 'cubic-bezier(.45,.05,.25,1)' },
+      { offset: .18, filter: 'blur(2.5px)' },
+      { offset: .84, transform: `translateY(${step * .12}%)`, filter: 'blur(0px)', easing: 'cubic-bezier(.3,0,.4,1)' },
+      { transform: 'translateY(0%)', filter: 'blur(0px)' }
+    ], { duration, delay, fill: 'both' });
+    return anim.finished.catch(() => {}).then(() => win.remove());
+  }
+  // Заставка: три барабана останавливаются по очереди, слева направо
+  function introReels() {
+    $$('.choice').forEach((btn, i) => spinReel(btn, { loops: 3 + i, duration: 1300 + i * 380, delay: 250 }));
+  }
 
   // Отклик на нажатие: волна из точки касания
   function ripple(btn, e) {
@@ -636,6 +678,7 @@
   renderWheel();
   renderChoices();
   syncSpin();
+  if (MODE === 'viewer') introReels();
   if (MODE === 'admin') { drawPrizeRows(); renderOwnEntries(); verifyAdminSession(); }
   poll();
 })();

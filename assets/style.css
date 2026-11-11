@@ -115,6 +115,15 @@ button{cursor:pointer}
 @keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
 
 /* Волна от касания */
+/* Барабан игрового автомата: рамка карточки неподвижна, в окне прокручивается лента символов */
+.reel{--rt:.085;--rx:.065;position:absolute;z-index:1;top:calc(var(--rt)*100%);bottom:calc(var(--rt)*100%);left:calc(var(--rx)*100%);right:calc(var(--rx)*100%);overflow:hidden;border-radius:9%/7%;pointer-events:none;background:#f3e1c0}
+.reel::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#2a120699 0%,transparent 24%,transparent 76%,#2a120699 100%);pointer-events:none}
+.reel-strip{position:absolute;left:0;top:0;width:100%;display:flex;flex-direction:column;will-change:transform}
+.reel-item{position:relative;flex:1 1 0;overflow:hidden}
+.reel-face{position:absolute;background-image:url(../img/neon-wheel-buttons.webp);background-repeat:no-repeat;background-size:450% auto;
+  width:calc(100% / (1 - 2 * var(--rx)));height:calc(100% / (1 - 2 * var(--rt)));
+  left:calc(-100% * var(--rx) / (1 - 2 * var(--rx)));top:calc(-100% * var(--rt) / (1 - 2 * var(--rt)))}
+
 .ripple{position:absolute;z-index:2;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#fff4cf;pointer-events:none;opacity:.7;animation:ripple .6s ease-out forwards}
 @keyframes ripple{to{transform:scale(18);opacity:0}}
 
@@ -164,8 +173,7 @@ button{cursor:pointer}
 .gauge-window{position:relative;width:100%;max-width:760px;aspect-ratio:1672/941;border-radius:16px;overflow:hidden;
   box-shadow:0 0 0 1px #ffd98a66,0 0 0 6px #2a120b,0 0 0 7px #e9b95c55,0 24px 60px #000b}
 .gauge-art{width:100%;height:100%;object-fit:cover}
-/* Закрываем нарисованную в картинке стрелку и ставим живую — координаты подогнаны под картинку */
-.static-needle-mask{position:absolute;z-index:2;left:50%;top:20.7%;bottom:23.7%;width:1.65%;transform:translateX(-50%);background:linear-gradient(90deg,#f3e4ca 0%,#efe0c4 46%,#c58e47 48%,#683d1f 50%,#79000b 52%,#aa1018 100%);pointer-events:none}
+/* Нарисованная стрелка вычищена из картинки (detective-indicator-clean.webp), живая стоит в её оси */
 .needle{position:absolute;z-index:3;left:50%;top:20.5%;width:1.35%;min-width:7px;max-width:20px;height:55%;border-radius:10px 10px 4px 4px;
   background:linear-gradient(90deg,#573119,#f6ce73 25%,#fff0bc 50%,#c58b35 76%,#4a2713);
   box-shadow:0 0 0 2px #32160b,0 0 0 4px #f6c75e,0 0 18px #ffcf67;transform-origin:50% 100%;transform:translateX(-50%) rotate(0deg);
